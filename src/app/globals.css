@@ -107,6 +107,7 @@ body {
   0% {
     transform: translateX(0);
   }
+
   100% {
     transform: translateX(-50%);
   }
@@ -116,6 +117,7 @@ body {
   0% {
     transform: translateX(-50%);
   }
+
   100% {
     transform: translateX(0);
   }
@@ -242,12 +244,10 @@ body {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(66, 153, 225, 0.08) 0%,
-    transparent 50%,
-    rgba(0, 0, 0, 0.15) 100%
-  );
+  background: linear-gradient(135deg,
+      rgba(66, 153, 225, 0.08) 0%,
+      transparent 50%,
+      rgba(0, 0, 0, 0.15) 100%);
   pointer-events: none;
 }
 
@@ -296,6 +296,7 @@ body {
     opacity: 0;
     transform: translateX(-36px);
   }
+
   100% {
     opacity: 1;
     transform: translateX(0);
@@ -308,6 +309,7 @@ body {
     transform: translateX(-24px);
     filter: blur(2px);
   }
+
   100% {
     opacity: 1;
     transform: translateX(0);
@@ -337,4 +339,3 @@ body {
   will-change: transform, opacity;
   animation: preloaderCharFromLeft 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
-
