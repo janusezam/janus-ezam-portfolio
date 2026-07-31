@@ -1,26 +1,340 @@
 @import "tailwindcss";
 
+/* ─── Theme Variables ─────────────────────────────────── */
 :root {
+  /* Light mode — Crisp white, vivid azure accent, dark marquee */
   --background: #ffffff;
-  --foreground: #171717;
+  --background-alt: #fafbff;
+  --surface: #ffffff;
+  --surface-border: #e2e8f0;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --accent: #2563eb;
+  --accent-hover: #3b82f6;
+  --status-current: #2563eb;
+  --status-ongoing: #059669;
+  --marquee-bg: #0f172a;
+  --marquee-text: #94a3b8;
+  --card-bg: #ffffff;
+  --card-border: #e2e8f0;
+  --badge-bg: rgba(37, 99, 235, 0.06);
+  --footer-bg: #0f172a;
+  --footer-text: #64748b;
+  --scrollbar-track: #f1f5f9;
+  --scrollbar-thumb: #cbd5e1;
 }
 
+[data-theme="dark"] {
+  --background: #0F1624;
+  --background-alt: #131B2E;
+  --surface: #1A2438;
+  --surface-border: #253352;
+  --text-primary: #E2E8F0;
+  --text-secondary: #A0AEC0;
+  --text-muted: #5A6A85;
+  --accent: #4299E1;
+  --accent-hover: #63B3ED;
+  --status-current: #4299E1;
+  --status-ongoing: #38B2AC;
+  --marquee-bg: #0B1120;
+  --marquee-text: #3A4A65;
+  --card-bg: #141D30;
+  --card-border: #1E2D4A;
+  --badge-bg: rgba(66, 153, 225, 0.08);
+  --footer-bg: #0B1120;
+  --footer-text: #4A5A75;
+  --scrollbar-track: #131B2E;
+  --scrollbar-thumb: #253352;
+}
+
+/* ─── Tailwind v4 theme tokens ────────────────────────── */
 @theme inline {
   --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background-alt: var(--background-alt);
+  --color-surface: var(--surface);
+  --color-surface-border: var(--surface-border);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-status-current: var(--status-current);
+  --color-status-ongoing: var(--status-ongoing);
+  --color-marquee-bg: var(--marquee-bg);
+  --color-marquee-text: var(--marquee-text);
+  --color-card-bg: var(--card-bg);
+  --color-card-border: var(--card-border);
+  --color-badge-bg: var(--badge-bg);
+  --color-footer-bg: var(--footer-bg);
+  --color-footer-text: var(--footer-text);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ─── Base Styles ─────────────────────────────────────── */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--text-primary);
+  font-family: var(--font-sans, "Inter", system-ui, sans-serif);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
+
+/* ─── Scrollbar ───────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 3px;
+}
+
+/* ─── Marquee Animation ──────────────────────────────── */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes marquee-reverse {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+
+.marquee-left {
+  animation: marquee var(--marquee-speed, 30s) linear infinite;
+}
+
+.marquee-right {
+  animation: marquee-reverse var(--marquee-speed, 30s) linear infinite;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* ─── Section Transitions ─────────────────────────────── */
+.section-fade-in {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.section-fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── Italic Tagline ──────────────────────────────────── */
+.tagline em,
+.tagline i {
+  font-style: italic;
+  color: var(--accent);
+}
+
+/* ─── Status Badges ───────────────────────────────────── */
+.badge-current {
+  background: rgba(66, 153, 225, 0.15);
+  color: var(--status-current);
+  border: 1px solid rgba(66, 153, 225, 0.3);
+}
+
+.badge-ongoing {
+  background: rgba(42, 157, 143, 0.15);
+  color: var(--status-ongoing);
+  border: 1px solid rgba(42, 157, 143, 0.3);
+}
+
+.badge-completed {
+  background: rgba(136, 136, 136, 0.15);
+  color: #888888;
+  border: 1px solid rgba(136, 136, 136, 0.3);
+}
+
+/* ─── Tech Badge ──────────────────────────────────────── */
+.tech-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  border: 1px solid;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tech-badge:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* ─── Card Hover ──────────────────────────────────────── */
+.card-hover {
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+/* Light mode: crisp shadow + subtle ring on white cards */
+:root .card-hover {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  ring: 1px solid #f1f5f9;
+}
+
+.card-hover:hover {
+  border-color: var(--accent);
+  box-shadow: 0 4px 24px rgba(37, 99, 235, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Dark mode: revert to subtle glow */
+[data-theme="dark"] .card-hover {
+  box-shadow: none;
+}
+
+[data-theme="dark"] .card-hover:hover {
+  box-shadow: 0 0 20px rgba(66, 153, 225, 0.1);
+}
+
+/* ─── Link Arrow ──────────────────────────────────────── */
+.link-arrow {
+  transition: transform 0.2s ease;
+}
+
+.group:hover .link-arrow {
+  transform: translateX(4px);
+}
+
+/* ─── Profile Image ───────────────────────────────────── */
+.profile-image-wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.3), 0 0 20px rgba(66, 153, 225, 0.1);
+}
+
+.profile-image-wrapper::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(66, 153, 225, 0.08) 0%,
+    transparent 50%,
+    rgba(0, 0, 0, 0.15) 100%
+  );
+  pointer-events: none;
+}
+
+/* ─── Laptop Mockup Container & Blend Styles ──────────────── */
+.laptop-mockup-wrapper {
+  background: var(--surface);
+  transition: background-color 0.3s ease;
+}
+
+:root .laptop-mockup-img {
+  mix-blend-mode: multiply;
+  filter: contrast(1.05) saturate(1.05) drop-shadow(0 15px 25px rgba(0, 0, 0, 0.15));
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
+}
+
+[data-theme="dark"] .laptop-mockup-wrapper {
+  background: radial-gradient(circle at center, #1E2D4A 0%, #141D30 100%);
+}
+
+[data-theme="dark"] .laptop-mockup-img {
+  mix-blend-mode: screen;
+  filter: contrast(1.1) brightness(1.02) drop-shadow(0 20px 30px rgba(0, 0, 0, 0.5));
+}
+
+
+/* ─── Section Plus Icon ───────────────────────────────── */
+.section-plus {
+  color: var(--accent);
+  font-weight: 300;
+  margin-right: 8px;
+}
+
+/* ─── Dot Indicator (Education) ───────────────────────── */
+.dot-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+  margin-top: 7px;
+}
+
+/* ─── Preloader Animations (Smooth Left Entrance, Non-Bouncy) ── */
+@keyframes preloaderSlideLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-36px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes preloaderCharFromLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-24px);
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+    filter: blur(0);
+  }
+}
+
+.preloader-slide-left {
+  opacity: 0;
+  animation: preloaderSlideLeft 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.preloader-icon-delay-1 {
+  animation-delay: 0.15s;
+}
+
+.preloader-icon-delay-2 {
+  animation-delay: 0.35s;
+}
+
+.preloader-icon-delay-3 {
+  animation-delay: 0.55s;
+}
+
+.preloader-char-anim {
+  opacity: 0;
+  will-change: transform, opacity;
+  animation: preloaderCharFromLeft 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
