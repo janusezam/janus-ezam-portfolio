@@ -25,4 +25,10 @@ export const marquees: Record<string, MarqueeConfig> = {
     speed: 40,
     direction: "right",
   },
+  techStack: {
+    text: "TECH STACK  —  TOOLS & FRAMEWORKS",
+    separator: "—",
+    speed: 40,
+    direction: "left",
+  },
 };

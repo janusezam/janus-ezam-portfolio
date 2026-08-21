@@ -58,7 +58,9 @@ export interface Project {
   title: string;
   description: string;
   image: string;
+  fullImage?: string;
   gallery?: string[];
+  fullGallery?: string[];
   tags: ProjectTag[];
   liveUrl?: string;
   codeUrl?: string;

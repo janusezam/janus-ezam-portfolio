@@ -35,24 +35,37 @@ export default function Home() {
         className="border-t border-b border-card-border"
       />
 
-      {/* ─── Experience + About ───────────────────────────── */}
+      {/* ─── Personal Information ─────────────────────────── */}
       <section
-        id="experience"
+        id="personal-info"
         className="w-full bg-background py-16 md:py-24"
       >
-        <div className="mx-auto max-w-6xl px-6 md:px-12 grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16">
-          <ExperienceSection />
-          <AboutSection />
+        <div className="mx-auto max-w-6xl px-6 md:px-12 flex flex-col gap-16">
+          {/* Top: About */}
+          <div className="w-full">
+            <AboutSection />
+          </div>
+          
+          {/* Bottom: Experience & Education side-by-side */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16">
+            <ExperienceSection />
+            <EducationSection />
+          </div>
         </div>
       </section>
 
-      {/* ─── Education + Tech Stack ───────────────────────── */}
+      {/* ─── Tech Stack Marquee ───────────────────────────── */}
+      <Marquee
+        config={marquees.techStack}
+        className="border-t border-b border-card-border"
+      />
+
+      {/* ─── Tech Stack Section ───────────────────────────── */}
       <section
-        id="education"
-        className="w-full bg-background pb-16 md:pb-24"
+        id="tech-stack"
+        className="w-full bg-background py-16 md:py-24"
       >
-        <div className="mx-auto max-w-6xl px-6 md:px-12 grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16">
-          <EducationSection />
+        <div className="mx-auto max-w-6xl px-6 md:px-12">
           <TechStackSection />
         </div>
       </section>
@@ -76,7 +89,7 @@ export default function Home() {
       <CertificationsSection />
 
       {/* ─── Contact Section (+ Find me on & + Get in touch) ── */}
-      <section id="contact" className="w-full bg-background-alt py-16 md:py-24 border-t border-card-border">
+      <section id="contact" className="w-full bg-background py-16 md:py-24 border-t border-card-border">
         <div className="mx-auto max-w-6xl px-6 md:px-12">
           <ContactSection />
         </div>

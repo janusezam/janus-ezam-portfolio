@@ -5,13 +5,21 @@ export const projects: Project[] = [
     title: "Water Delivery Management System",
     description:
       "An operational platform designed to automate and digitize water refilling stations. It connects a point-of-sale (POS) and customer ordering portal directly to a real-time GPS tracking system, allowing admins to seamlessly dispatch orders, manage inventory, and track their delivery drivers on a live map.",
-    image: "/images/projects/proj1.png",
+    image: "/images/projects/proj1_v2.png",
+    fullImage: "/images/projects/projpic1.png",
     gallery: [
-      "/images/projects/proj1.png",
-      "/images/projects/proj2.png",
-      "/images/projects/proj3.png",
-      "/images/projects/proj4.png",
-      "/images/projects/proj5.png",
+      "/images/projects/proj1_v2.png",
+      "/images/projects/proj2_v3.png",
+      "/images/projects/proj3_v2.png",
+      "/images/projects/proj4_v2.png",
+      "/images/projects/proj5_v2.png",
+    ],
+    fullGallery: [
+      "/images/projects/projpic1.png",
+      "/images/projects/projpic2.png",
+      "/images/projects/projpic3.png",
+      "/images/projects/projpic4.png",
+      "/images/projects/projpic5.png",
     ],
     tags: [
       { name: "MongoDB", color: "#47A248" },

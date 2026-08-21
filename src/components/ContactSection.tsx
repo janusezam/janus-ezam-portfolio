@@ -9,7 +9,7 @@ function SocialIcon({ icon }: { icon: SocialLink["icon"] }) {
   switch (icon) {
     case "linkedin":
       return (
-        <span className="w-8 h-8 rounded-md bg-[#0A66C2]/15 text-[#0A66C2] flex items-center justify-center text-xs font-bold">
+        <span className="w-8 h-8 rounded-md bg-accent/10 text-accent flex items-center justify-center text-xs font-bold">
           in
         </span>
       );
@@ -23,7 +23,7 @@ function SocialIcon({ icon }: { icon: SocialLink["icon"] }) {
       );
     case "facebook":
       return (
-        <span className="w-8 h-8 rounded-md bg-[#1877F2]/15 text-[#1877F2] flex items-center justify-center text-xs font-bold">
+        <span className="w-8 h-8 rounded-md bg-accent/10 text-accent flex items-center justify-center text-xs font-bold">
           f
         </span>
       );

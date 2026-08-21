@@ -11,6 +11,7 @@ export default function ProjectsSection() {
     index: number;
     title: string;
   } | null>(null);
+  const [displayMode, setDisplayMode] = useState<"mockup" | "full">("mockup");
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -65,7 +66,7 @@ export default function ProjectsSection() {
   return (
     <section
       id="projects"
-      className="w-full bg-background-alt py-16 md:py-24 relative"
+      className="w-full bg-background py-16 md:py-24 relative"
     >
       <div
         ref={sectionRef}
@@ -86,70 +87,74 @@ export default function ProjectsSection() {
           {projects.map((project, index) => (
             <div
               key={index}
-              className="bg-card-bg border border-card-border rounded-2xl overflow-hidden card-hover shadow-sm"
+              className="bg-card-bg border border-card-border rounded-lg overflow-hidden card-hover"
             >
               <div className="flex flex-col lg:flex-row">
-                {/* Left: Laptop Screen Showcase */}
-                <div
-                  onClick={() =>
-                    project.gallery &&
-                    setActiveGallery({
-                      images: project.gallery,
-                      index: 0,
-                      title: project.title,
-                    })
-                  }
-                  className="laptop-mockup-wrapper group/laptop relative w-full lg:w-[50%] min-h-[320px] md:min-h-[380px] p-6 flex flex-col items-center justify-between cursor-pointer select-none border-b lg:border-b-0 lg:border-r border-card-border"
-                >
-                  <div className="w-full flex-1 flex items-center justify-center py-2">
-                    <Image
-                      src={project.image}
-                      alt={project.title}
-                      width={800}
-                      height={500}
-                      priority
-                      className="laptop-mockup-img"
-                    />
-                  </div>
-
-                  {/* Hover Overlay matching Certifications exactly */}
-                  <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px] opacity-0 group-hover/laptop:opacity-100 transition-opacity duration-300 flex items-center justify-center text-white">
-                    <span className="px-4 py-2 rounded-full bg-accent/90 text-white font-medium text-xs tracking-wider uppercase flex items-center gap-2 shadow-lg backdrop-blur-sm">
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={2}
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
-                        />
-                      </svg>
-                      Click to View
-                    </span>
-                  </div>
-
-                  {/* Bottom Bar: View Project Image with Arrow (matching Certifications) */}
-                  <div className="w-full pt-3 border-t border-card-border/50 flex items-center justify-between text-xs text-text-secondary group-hover/laptop:text-accent transition-colors">
-                    <span className="font-semibold flex items-center gap-1.5">
-                      View Project Image
-                    </span>
-                    <svg
-                      className="w-4 h-4 link-arrow transform group-hover/laptop:translate-x-1 transition-transform"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
+                {/* Left: Image Showcase with Toggle */}
+                <div className="relative w-full lg:w-[50%] min-h-[320px] md:min-h-[380px] flex flex-col cursor-pointer select-none border-b lg:border-b-0 lg:border-r border-card-border overflow-hidden group/laptop">
+                  
+                  {/* Toggle Switch */}
+                  <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 flex bg-black/40 backdrop-blur-md rounded-lg p-1 border border-white/10 shadow-xl" onClick={(e) => e.stopPropagation()}>
+                    <button
+                      onClick={() => setDisplayMode("mockup")}
+                      className={`px-3 py-1.5 text-[9px] md:text-[10px] font-mono tracking-wider uppercase rounded-md transition-all ${displayMode === "mockup" ? "bg-accent text-white shadow-md scale-100" : "text-white/60 hover:text-white hover:bg-white/10 scale-95"}`}
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-                      />
-                    </svg>
+                      Mockup View
+                    </button>
+                    <button
+                      onClick={() => setDisplayMode("full")}
+                      className={`px-3 py-1.5 text-[9px] md:text-[10px] font-mono tracking-wider uppercase rounded-md transition-all ${displayMode === "full" ? "bg-accent text-white shadow-md scale-100" : "text-white/60 hover:text-white hover:bg-white/10 scale-95"}`}
+                    >
+                      Full View
+                    </button>
+                  </div>
+
+                  {/* Image Display Area (Clickable) */}
+                  <div
+                    onClick={() => {
+                      const gallery = displayMode === "mockup" ? project.gallery : project.fullGallery;
+                      if (gallery) {
+                        setActiveGallery({
+                          images: gallery,
+                          index: 0,
+                          title: project.title,
+                        });
+                      }
+                    }}
+                    className="w-full h-full flex flex-col p-6 items-center justify-between relative flex-1 transition-transform duration-300 hover:scale-[1.02]"
+                  >
+                    {/* Image Container with Crossfade */}
+                    <div className="w-full flex-1 relative flex items-center justify-center py-6 md:py-8">
+                      {/* Mockup Image */}
+                      <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${displayMode === "mockup" ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"}`}>
+                        <div className="relative w-full h-full flex items-center justify-center">
+                          <Image
+                            src={project.image}
+                            alt={`${project.title} Mockup`}
+                            width={800}
+                            height={500}
+                            className="laptop-mockup-img max-h-full object-contain"
+                            priority
+                          />
+                        </div>
+                      </div>
+
+                      {/* Full Image */}
+                      {project.fullImage && (
+                        <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${displayMode === "full" ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"}`}>
+                          <div className="relative w-full h-full flex items-center justify-center rounded-lg overflow-hidden">
+                            <Image
+                              src={project.fullImage}
+                              alt={`${project.title} Full View`}
+                              width={800}
+                              height={500}
+                              className="max-h-full object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.4)]"
+                              priority
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
 
@@ -193,7 +198,7 @@ export default function ProjectsSection() {
                         href={project.liveUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white text-sm font-semibold px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg transition-all"
+                        className="group inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white text-[10px] font-mono tracking-[0.15em] uppercase px-4 py-2 rounded-md transition-all"
                       >
                         <span>View Project</span>
                         <svg
@@ -216,11 +221,11 @@ export default function ProjectsSection() {
                         href={project.codeUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group inline-flex items-center gap-2 bg-surface hover:bg-background-alt border border-card-border text-text-primary text-sm font-semibold px-5 py-2.5 rounded-lg transition-all"
+                        className="group inline-flex items-center gap-2 bg-card-bg hover:bg-surface border border-card-border hover:border-accent text-text-secondary hover:text-accent text-[10px] font-mono tracking-[0.15em] uppercase px-4 py-2 rounded-md transition-all"
                       >
                         <span>View Code</span>
                         <svg
-                          className="w-4 h-4 link-arrow text-text-muted group-hover:text-accent"
+                          className="w-4 h-4 link-arrow text-text-muted group-hover:text-accent transition-colors"
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
@@ -242,110 +247,93 @@ export default function ProjectsSection() {
         </div>
       </div>
 
-      {/* Lightbox Modal */}
+      {/* Floating Centered Modal */}
       {activeGallery && (
-        <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex flex-col justify-between p-4 md:p-8 transition-opacity duration-300">
-          {/* Top Bar */}
-          <div className="flex items-center justify-between text-white z-10 max-w-6xl mx-auto w-full">
-            <div>
-              <h3 className="text-lg md:text-xl font-bold">
-                {activeGallery.title}
-              </h3>
-              <p className="text-xs md:text-sm text-gray-400 font-mono">
-                {activeGallery.index + 1} / {activeGallery.images.length}
-              </p>
-            </div>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 md:p-8 animate-fade-in"
+          onClick={() => setActiveGallery(null)}
+        >
+          {/* Modal Container */}
+          <div
+            className="relative w-full max-w-5xl bg-card-bg rounded-xl border border-card-border shadow-2xl overflow-hidden flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
             <button
               onClick={() => setActiveGallery(null)}
-              className="p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
+              className="absolute top-4 right-4 z-20 p-2 rounded-full bg-black/40 hover:bg-black/80 text-white transition-colors cursor-pointer backdrop-blur-sm"
               aria-label="Close modal"
             >
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
-          </div>
 
-          {/* Main Image Display with Nav Buttons */}
-          <div className="relative flex-1 flex items-center justify-center my-4">
-            {/* Prev Button */}
-            <button
-              onClick={() =>
-                setActiveGallery((prev) =>
-                  prev
-                    ? {
-                        ...prev,
-                        index:
-                          (prev.index - 1 + prev.images.length) %
-                          prev.images.length,
-                      }
-                    : null
-                )
-              }
-              className="absolute left-2 md:left-4 z-10 p-3 rounded-full bg-black/60 hover:bg-accent text-white transition-all border border-white/10 cursor-pointer"
-              aria-label="Previous image"
-            >
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-
-            {/* Active Image */}
-            <div className="relative w-full h-full max-w-5xl max-h-[75vh]">
-              <Image
-                src={activeGallery.images[activeGallery.index]}
-                alt={`Screenshot ${activeGallery.index + 1}`}
-                fill
-                className="object-contain"
-                priority
-              />
-            </div>
-
-            {/* Next Button */}
-            <button
-              onClick={() =>
-                setActiveGallery((prev) =>
-                  prev
-                    ? {
-                        ...prev,
-                        index: (prev.index + 1) % prev.images.length,
-                      }
-                    : null
-                )
-              }
-              className="absolute right-2 md:right-4 z-10 p-3 rounded-full bg-black/60 hover:bg-accent text-white transition-all border border-white/10 cursor-pointer"
-              aria-label="Next image"
-            >
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          </div>
-
-          {/* Bottom Thumbnails */}
-          <div className="flex items-center justify-center gap-3 overflow-x-auto py-2 z-10 max-w-6xl mx-auto w-full">
-            {activeGallery.images.map((img, idx) => (
+            {/* Image Display Area */}
+            <div className="relative w-full h-[60vh] md:h-[80vh] flex items-center justify-center bg-black/20">
+              {/* Prev Button */}
               <button
-                key={idx}
-                onClick={() =>
+                onClick={(e) => {
+                  e.stopPropagation();
                   setActiveGallery((prev) =>
-                    prev ? { ...prev, index: idx } : null
-                  )
-                }
-                className={`relative w-16 h-12 rounded-lg overflow-hidden border-2 transition-all flex-shrink-0 cursor-pointer ${
-                  activeGallery.index === idx
-                    ? "border-accent scale-110 shadow-lg shadow-accent/20"
-                    : "border-white/20 opacity-50 hover:opacity-100"
-                }`}
+                    prev
+                      ? {
+                          ...prev,
+                          index: (prev.index - 1 + prev.images.length) % prev.images.length,
+                        }
+                      : null
+                  );
+                }}
+                className="absolute left-4 z-20 p-3 rounded-full bg-black/40 hover:bg-accent text-white transition-all border border-white/10 cursor-pointer backdrop-blur-sm"
+                aria-label="Previous image"
+              >
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+
+              {/* The Image with fade effect */}
+              <div
+                key={activeGallery.index}
+                className="absolute inset-0 w-full h-full animate-fade-in p-2 md:p-8"
               >
                 <Image
-                  src={img}
-                  alt={`Thumbnail ${idx + 1}`}
+                  src={activeGallery.images[activeGallery.index]}
+                  alt={`${activeGallery.title} - ${activeGallery.index + 1}`}
                   fill
-                  className="object-cover"
+                  className="object-contain"
+                  priority
                 />
+              </div>
+
+              {/* Next Button */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActiveGallery((prev) =>
+                    prev
+                      ? {
+                          ...prev,
+                          index: (prev.index + 1) % prev.images.length,
+                        }
+                      : null
+                  );
+                }}
+                className="absolute right-4 z-20 p-3 rounded-full bg-black/40 hover:bg-accent text-white transition-all border border-white/10 cursor-pointer backdrop-blur-sm"
+                aria-label="Next image"
+              >
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
               </button>
-            ))}
+            </div>
+            
+            {/* Numeric Indicator */}
+            <div className="absolute bottom-6 left-0 right-0 flex justify-center z-20 pointer-events-none">
+              <span className="bg-black/60 backdrop-blur-md px-4 py-1.5 rounded-full text-white font-mono text-sm border border-white/10 shadow-lg tracking-widest">
+                {activeGallery.index + 1} / {activeGallery.images.length}
+              </span>
+            </div>
           </div>
         </div>
       )}

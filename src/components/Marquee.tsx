@@ -25,7 +25,7 @@ export default function Marquee({ config, className = "" }: MarqueeProps) {
 
   return (
     <div
-      className={`overflow-hidden bg-marquee-bg py-3 select-none ${className}`}
+      className={`overflow-hidden bg-marquee-bg border-y border-marquee-border py-3 select-none ${className}`}
       aria-hidden="true"
     >
       <div

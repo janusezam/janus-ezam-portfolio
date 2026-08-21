@@ -67,20 +67,23 @@ export default function TechStackSection() {
 
   return (
     <div ref={sectionRef} className="section-fade-in">
-      <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-3">
-        <span className="section-plus">+</span> Tech Stack
-      </h2>
+      <div className="flex items-center justify-between mb-10">
+        <div>
+          <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">
+            <span className="section-plus">+</span> Tech Stack
+          </h2>
+          <p className="text-text-muted text-[10px] tracking-[0.25em] uppercase font-mono">
+            TECHNOLOGIES & DEV
+          </p>
+        </div>
+      </div>
 
-      <p className="text-text-muted text-[10px] tracking-[0.25em] uppercase font-mono mb-8">
-        TECHNOLOGIES & DEV
-      </p>
-
-      <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {techStack.map((category, catIndex) => (
-          <div key={catIndex}>
-            <p className="text-text-muted text-[10px] tracking-[0.2em] uppercase font-mono mb-3">
+          <div key={catIndex} className="bg-card-bg border border-card-border rounded-lg p-6 card-hover h-full flex flex-col">
+            <h3 className="text-text-primary text-sm font-semibold mb-5 uppercase tracking-wider">
               {category.category}
-            </p>
+            </h3>
             <div className="flex flex-wrap gap-2.5">
               {category.items.map((item, itemIndex) => {
                 const IconComponent = iconMap[item.name];

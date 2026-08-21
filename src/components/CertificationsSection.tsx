@@ -66,7 +66,7 @@ export default function CertificationsSection() {
             <div
               key={index}
               onClick={() => cert.image && setSelectedCert(cert)}
-              className="group bg-card-bg border border-card-border rounded-xl overflow-hidden card-hover cursor-pointer flex flex-col justify-between"
+              className="group bg-card-bg border border-card-border rounded-lg overflow-hidden card-hover cursor-pointer flex flex-col justify-between"
             >
               {/* Image Preview Container */}
               {cert.image ? (
@@ -80,7 +80,7 @@ export default function CertificationsSection() {
                   />
                   {/* Hover Overlay Badge */}
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                    <span className="px-4 py-2 rounded-full bg-accent/90 text-white font-medium text-xs tracking-wider uppercase flex items-center gap-2 shadow-lg backdrop-blur-sm">
+                    <span className="px-4 py-2 rounded-md bg-accent text-white font-mono text-[10px] tracking-[0.15em] uppercase flex items-center gap-2 backdrop-blur-sm">
                       <svg
                         className="w-4 h-4"
                         fill="none"
@@ -152,7 +152,7 @@ export default function CertificationsSection() {
           onClick={() => setSelectedCert(null)}
         >
           <div
-            className="relative max-w-4xl w-full bg-card-bg border border-card-border rounded-2xl overflow-hidden shadow-2xl p-4 md:p-6"
+            className="relative max-w-4xl w-full bg-card-bg border border-card-border rounded-lg overflow-hidden p-4 md:p-6"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}

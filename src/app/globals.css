@@ -2,25 +2,26 @@
 
 /* ─── Theme Variables ─────────────────────────────────── */
 :root {
-  /* Light mode — Crisp white, vivid azure accent, dark marquee */
-  --background: #ffffff;
-  --background-alt: #fafbff;
+  /* Light mode — Comfortable soft slate, elegant contrast */
+  --background: #f8fafc;
+  --background-alt: #f1f5f9;
   --surface: #ffffff;
-  --surface-border: #e2e8f0;
-  --text-primary: #0f172a;
-  --text-secondary: #334155;
-  --text-muted: #64748b;
-  --accent: #2563eb;
-  --accent-hover: #3b82f6;
-  --status-current: #2563eb;
+  --surface-border: #cbd5e1;
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --accent: #0891b2;
+  --accent-hover: #06b6d4;
+  --status-current: #0891b2;
   --status-ongoing: #059669;
-  --marquee-bg: #0f172a;
-  --marquee-text: #94a3b8;
+  --marquee-bg: #f8fafc;
+  --marquee-text: #1e293b;
+  --marquee-border: #cbd5e1;
   --card-bg: #ffffff;
   --card-border: #e2e8f0;
-  --badge-bg: rgba(37, 99, 235, 0.06);
+  --badge-bg: rgba(8, 145, 178, 0.06);
   --footer-bg: #0f172a;
-  --footer-text: #64748b;
+  --footer-text: #94a3b8;
   --scrollbar-track: #f1f5f9;
   --scrollbar-thumb: #cbd5e1;
 }
@@ -33,15 +34,16 @@
   --text-primary: #E2E8F0;
   --text-secondary: #A0AEC0;
   --text-muted: #5A6A85;
-  --accent: #4299E1;
-  --accent-hover: #63B3ED;
-  --status-current: #4299E1;
+  --accent: #22d3ee;
+  --accent-hover: #67e8f9;
+  --status-current: #22d3ee;
   --status-ongoing: #38B2AC;
   --marquee-bg: #0B1120;
   --marquee-text: #3A4A65;
+  --marquee-border: #1E2D4A;
   --card-bg: #141D30;
   --card-border: #1E2D4A;
-  --badge-bg: rgba(66, 153, 225, 0.08);
+  --badge-bg: rgba(34, 211, 238, 0.08);
   --footer-bg: #0B1120;
   --footer-text: #4A5A75;
   --scrollbar-track: #131B2E;
@@ -63,6 +65,7 @@
   --color-status-ongoing: var(--status-ongoing);
   --color-marquee-bg: var(--marquee-bg);
   --color-marquee-text: var(--marquee-text);
+  --color-marquee-border: var(--marquee-border);
   --color-card-bg: var(--card-bg);
   --color-card-border: var(--card-border);
   --color-badge-bg: var(--badge-bg);
@@ -253,23 +256,17 @@ body {
 
 /* ─── Laptop Mockup Container & Blend Styles ──────────────── */
 .laptop-mockup-wrapper {
-  background: var(--surface);
+  background: transparent;
   transition: background-color 0.3s ease;
 }
 
 :root .laptop-mockup-img {
-  mix-blend-mode: multiply;
-  filter: contrast(1.05) saturate(1.05) drop-shadow(0 15px 25px rgba(0, 0, 0, 0.15));
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
-}
-
-[data-theme="dark"] .laptop-mockup-wrapper {
-  background: radial-gradient(circle at center, #1E2D4A 0%, #141D30 100%);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.15));
 }
 
 [data-theme="dark"] .laptop-mockup-img {
-  mix-blend-mode: screen;
-  filter: contrast(1.1) brightness(1.02) drop-shadow(0 20px 30px rgba(0, 0, 0, 0.5));
+  filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.5));
 }
 
 
@@ -338,4 +335,14 @@ body {
   opacity: 0;
   will-change: transform, opacity;
   animation: preloaderCharFromLeft 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* ─── Modal Image Transition ────────────────────────────── */
+@keyframes fade-in {
+  from { opacity: 0.5; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out forwards;
 }
