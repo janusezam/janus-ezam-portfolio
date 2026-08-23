@@ -1,41 +1,25 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { education } from "@/data/education";
+import ScrollReveal from "./ScrollReveal";
+import { StaggerChildren } from "./ScrollReveal";
 
 export default function EducationSection() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("visible");
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-
-    const el = sectionRef.current;
-    if (el) observer.observe(el);
-    return () => {
-      if (el) observer.unobserve(el);
-    };
-  }, []);
-
   return (
-    <div ref={sectionRef} className="section-fade-in">
-      <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-3">
-        <span className="section-plus">+</span> Education
-      </h2>
+    <div>
+      <ScrollReveal direction="right" duration={600}>
+        <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-3">
+          <span className="section-plus">+</span> Education
+        </h2>
+      </ScrollReveal>
 
-      <p className="text-text-muted text-[10px] tracking-[0.25em] uppercase font-mono mb-8">
-        ACADEMIC BACKGROUND
-      </p>
+      <ScrollReveal direction="right" delay={100} duration={600}>
+        <p className="text-text-muted text-[10px] tracking-[0.25em] uppercase font-mono mb-8">
+          ACADEMIC BACKGROUND
+        </p>
+      </ScrollReveal>
 
-      <div className="flex flex-col gap-5">
+      <StaggerChildren stagger={150} direction="up" className="flex flex-col gap-5">
         {education.map((entry, index) => (
           <div key={index} className="flex items-start gap-4">
             {/* Dot Indicator */}
@@ -59,7 +43,7 @@ export default function EducationSection() {
             </div>
           </div>
         ))}
-      </div>
+      </StaggerChildren>
     </div>
   );
 }

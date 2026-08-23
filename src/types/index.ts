@@ -41,6 +41,8 @@ export interface EducationEntry {
 export interface TechItem {
   name: string;
   color: string;
+  icon?: string;        // path to PNG in /images/Techstack/
+  description?: string; // short tagline for the card
 }
 
 export interface TechCategory {
@@ -55,8 +57,10 @@ export interface ProjectTag {
 }
 
 export interface Project {
+  id: string;
   title: string;
   description: string;
+  features?: string[];
   image: string;
   fullImage?: string;
   gallery?: string[];

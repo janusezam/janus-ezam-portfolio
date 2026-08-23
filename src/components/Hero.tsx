@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { profile } from "@/data/profile";
 import ThemeToggle from "./ThemeToggle";
+import ScrollReveal from "./ScrollReveal";
 
 import { useTheme } from "@/context/ThemeContext";
 
@@ -34,7 +35,7 @@ export default function Hero() {
       className="relative w-full bg-background py-16 md:py-24 lg:py-32"
     >
       <div className="mx-auto max-w-6xl px-6 md:px-12 flex flex-col md:flex-row items-center gap-12 md:gap-16">
-        {/* Profile Image */}
+        <ScrollReveal direction="left" duration={800}>
         <div className="flex-shrink-0 relative group">
           {/* Subtle Ambient Backlight Glow */}
           <div className="absolute -inset-1 bg-gradient-to-r from-accent/20 to-accent/5 rounded-xl blur-lg opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
@@ -51,8 +52,9 @@ export default function Hero() {
             />
           </div>
         </div>
+        </ScrollReveal>
 
-        {/* Content */}
+        <ScrollReveal direction="right" duration={800} delay={200}>
         <div className="flex flex-col items-center md:items-start text-center md:text-left gap-5">
           {/* Tagline */}
           <p className="tagline text-text-secondary text-sm md:text-base tracking-wide font-light italic">
@@ -120,6 +122,7 @@ export default function Hero() {
             <ThemeToggle />
           </div>
         </div>
+        </ScrollReveal>
       </div>
     </section>
   );

@@ -2,9 +2,17 @@ import type { Project } from "@/types";
 
 export const projects: Project[] = [
   {
+    id: "water-delivery-management-system",
     title: "Water Delivery Management System",
     description:
       "An operational platform designed to automate and digitize water refilling stations. It connects a point-of-sale (POS) and customer ordering portal directly to a real-time GPS tracking system, allowing admins to seamlessly dispatch orders, manage inventory, and track their delivery drivers on a live map.",
+    features: [
+      "Automated Point-of-Sale (POS) System",
+      "Customer Ordering Portal",
+      "Real-time GPS Tracking System",
+      "Live Map Dispatching",
+      "Inventory Management",
+    ],
     image: "/images/projects/proj1_v2.png",
     fullImage: "/images/projects/projpic1.png",
     gallery: [

@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { projects } from "@/data/projects";
-
+import ScrollReveal from "./ScrollReveal";
+import { StaggerChildren } from "./ScrollReveal";
 export default function ProjectsSection() {
-  const sectionRef = useRef<HTMLDivElement>(null);
   const [activeGallery, setActiveGallery] = useState<{
     images: string[];
     index: number;
@@ -13,24 +14,7 @@ export default function ProjectsSection() {
   } | null>(null);
   const [displayMode, setDisplayMode] = useState<"mockup" | "full">("mockup");
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("visible");
-          }
-        });
-      },
-      { threshold: 0.05 }
-    );
 
-    const el = sectionRef.current;
-    if (el) observer.observe(el);
-    return () => {
-      if (el) observer.unobserve(el);
-    };
-  }, []);
 
   // Keyboard navigation for modal
   useEffect(() => {
@@ -68,22 +52,20 @@ export default function ProjectsSection() {
       id="projects"
       className="w-full bg-background py-16 md:py-24 relative"
     >
-      <div
-        ref={sectionRef}
-        className="section-fade-in mx-auto max-w-6xl px-6 md:px-12"
-      >
+      <div className="mx-auto max-w-6xl px-6 md:px-12">
         {/* Header */}
-        <div className="flex items-center justify-between mb-12">
-          <h2 className="text-2xl md:text-3xl font-bold text-text-primary">
-            <span className="section-plus">+</span> Recent Projects
-          </h2>
-          <p className="text-text-muted text-xs tracking-[0.15em] uppercase font-mono">
-            {projects.length} {projects.length === 1 ? "Project" : "Projects"}
-          </p>
-        </div>
+        <ScrollReveal direction="up" duration={600}>
+          <div className="flex items-center justify-between mb-12">
+            <h2 className="text-2xl md:text-3xl font-bold text-text-primary">
+              <span className="section-plus">+</span> Recent Projects
+            </h2>
+            <p className="text-text-muted text-xs tracking-[0.15em] uppercase font-mono">
+              {projects.length} {projects.length === 1 ? "Project" : "Projects"}
+            </p>
+          </div>
+        </ScrollReveal>
 
-        {/* Project Cards */}
-        <div className="flex flex-col gap-8">
+        <StaggerChildren stagger={200} direction="up" className="flex flex-col gap-8">
           {projects.map((project, index) => (
             <div
               key={index}
@@ -159,92 +141,43 @@ export default function ProjectsSection() {
                 </div>
 
                 {/* Right: Content Details */}
-                <div className="flex-1 p-6 md:p-10 flex flex-col justify-between">
+                <div className="flex-1 p-6 md:p-8 flex flex-col justify-center">
                   <div>
-                    <h3 className="text-2xl md:text-3xl font-bold text-text-primary mb-4 tracking-tight">
+                    <h3 className="text-2xl font-bold text-text-primary mb-3 tracking-tight line-clamp-1">
                       {project.title}
                     </h3>
-                    <p className="text-text-secondary text-sm md:text-base leading-relaxed mb-6">
+                    <p className="text-text-secondary text-sm md:text-base leading-relaxed mb-6 line-clamp-1">
                       {project.description}
                     </p>
-
-                    {/* Tech Stack Badges */}
-                    <div className="mb-8">
-                      <h4 className="text-xs font-mono uppercase text-text-muted tracking-wider mb-3">
-                        Technologies Used
-                      </h4>
-                      <div className="flex flex-wrap gap-2">
-                        {project.tags.map((tag, tagIndex) => (
-                          <span
-                            key={tagIndex}
-                            className="tech-badge text-[12px] py-1 px-3"
-                            style={{
-                              color: tag.color,
-                              borderColor: `${tag.color}40`,
-                              backgroundColor: `${tag.color}15`,
-                            }}
-                          >
-                            {tag.name}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
                   </div>
 
-                  {/* Action Buttons / Links */}
-                  <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-card-border/60">
-                    {project.liveUrl && (
-                      <a
-                        href={project.liveUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white text-[10px] font-mono tracking-[0.15em] uppercase px-4 py-2 rounded-md transition-all"
+                  {/* Action Link */}
+                  <div>
+                    <Link
+                      href={`/project/${project.id}`}
+                      className="group inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white text-[10px] font-mono tracking-[0.15em] uppercase px-4 py-2.5 rounded-md transition-all"
+                    >
+                      <span>View Details</span>
+                      <svg
+                        className="w-4 h-4 link-arrow transition-transform group-hover:translate-x-1"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2}
                       >
-                        <span>View Project</span>
-                        <svg
-                          className="w-4 h-4 link-arrow"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          strokeWidth={2}
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                          />
-                        </svg>
-                      </a>
-                    )}
-                    {project.codeUrl && (
-                      <a
-                        href={project.codeUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group inline-flex items-center gap-2 bg-card-bg hover:bg-surface border border-card-border hover:border-accent text-text-secondary hover:text-accent text-[10px] font-mono tracking-[0.15em] uppercase px-4 py-2 rounded-md transition-all"
-                      >
-                        <span>View Code</span>
-                        <svg
-                          className="w-4 h-4 link-arrow text-text-muted group-hover:text-accent transition-colors"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          strokeWidth={2}
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                          />
-                        </svg>
-                      </a>
-                    )}
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M17 8l4 4m0 0l-4 4m4-4H3"
+                        />
+                      </svg>
+                    </Link>
                   </div>
                 </div>
               </div>
             </div>
           ))}
-        </div>
+        </StaggerChildren>
       </div>
 
       {/* Floating Centered Modal */}
@@ -255,7 +188,7 @@ export default function ProjectsSection() {
         >
           {/* Modal Container */}
           <div
-            className="relative w-full max-w-5xl bg-card-bg rounded-xl border border-card-border shadow-2xl overflow-hidden flex flex-col"
+            className="relative w-full max-w-5xl h-[80vh] flex flex-col justify-center items-center"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close Button */}
@@ -270,7 +203,7 @@ export default function ProjectsSection() {
             </button>
 
             {/* Image Display Area */}
-            <div className="relative w-full h-[60vh] md:h-[80vh] flex items-center justify-center bg-black/20">
+            <div className="relative w-full h-full flex items-center justify-center">
               {/* Prev Button */}
               <button
                 onClick={(e) => {

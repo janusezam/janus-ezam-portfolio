@@ -1,32 +1,14 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { certifications } from "@/data/certifications";
 import type { Certification } from "@/types";
+import ScrollReveal from "./ScrollReveal";
+import { StaggerChildren } from "./ScrollReveal";
 
 export default function CertificationsSection() {
-  const sectionRef = useRef<HTMLDivElement>(null);
   const [selectedCert, setSelectedCert] = useState<Certification | null>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("visible");
-          }
-        });
-      },
-      { threshold: 0.05 }
-    );
-
-    const el = sectionRef.current;
-    if (el) observer.observe(el);
-    return () => {
-      if (el) observer.unobserve(el);
-    };
-  }, []);
 
   // Close modal on Escape key press
   useEffect(() => {
@@ -41,27 +23,26 @@ export default function CertificationsSection() {
 
   return (
     <section id="certifications" className="w-full bg-background py-16 md:py-24">
-      <div
-        ref={sectionRef}
-        className="section-fade-in mx-auto max-w-6xl px-6 md:px-12"
-      >
+      <div className="mx-auto max-w-6xl px-6 md:px-12">
         {/* Header */}
-        <div className="flex items-center justify-between mb-10">
-          <div>
-            <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">
-              <span className="section-plus">+</span> Certifications
-            </h2>
-            <p className="text-text-muted text-[10px] tracking-[0.25em] uppercase font-mono">
-              OFFICIAL CREDENTIALS & RECOGNITION
-            </p>
+        <ScrollReveal direction="up" duration={600}>
+          <div className="flex items-center justify-between mb-10">
+            <div>
+              <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">
+                <span className="section-plus">+</span> Certifications
+              </h2>
+              <p className="text-text-muted text-[10px] tracking-[0.25em] uppercase font-mono">
+                OFFICIAL CREDENTIALS & RECOGNITION
+              </p>
+            </div>
+            <span className="text-text-muted text-xs tracking-[0.15em] uppercase font-mono border border-card-border px-3 py-1.5 rounded-full">
+              {certifications.length} Certified
+            </span>
           </div>
-          <span className="text-text-muted text-xs tracking-[0.15em] uppercase font-mono border border-card-border px-3 py-1.5 rounded-full">
-            {certifications.length} Certified
-          </span>
-        </div>
+        </ScrollReveal>
 
         {/* Certificate Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <StaggerChildren stagger={200} direction="scale" className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {certifications.map((cert, index) => (
             <div
               key={index}
@@ -142,7 +123,7 @@ export default function CertificationsSection() {
               </div>
             </div>
           ))}
-        </div>
+        </StaggerChildren>
       </div>
 
       {/* Full Image Modal / Lightbox */}

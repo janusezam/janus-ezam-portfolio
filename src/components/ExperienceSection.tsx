@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { experience } from "@/data/experience";
 import type { ExperienceStatus } from "@/types";
+import ScrollReveal from "./ScrollReveal";
+import { StaggerChildren } from "./ScrollReveal";
 
 const statusClass: Record<ExperienceStatus, string> = {
   Current: "badge-current",
@@ -11,46 +12,27 @@ const statusClass: Record<ExperienceStatus, string> = {
 };
 
 export default function ExperienceSection() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("visible");
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-
-    const el = sectionRef.current;
-    if (el) observer.observe(el);
-    return () => {
-      if (el) observer.unobserve(el);
-    };
-  }, []);
-
   return (
-    <div ref={sectionRef} className="section-fade-in">
+    <div>
       {/* Header row */}
-      <div className="flex items-start justify-between mb-8">
-        <h2 className="text-2xl md:text-3xl font-bold text-text-primary">
-          <span className="section-plus">+</span> Experience
-        </h2>
-        <div className="text-right">
-          <span className="text-3xl md:text-4xl font-bold text-accent">
-            {experience.yearsCount}
-          </span>
-          <p className="text-text-muted text-[10px] tracking-[0.2em] uppercase font-mono whitespace-pre-line leading-relaxed mt-1">
-            {experience.yearsLabel}
-          </p>
+      <ScrollReveal direction="left" duration={600}>
+        <div className="flex items-start justify-between mb-8">
+          <h2 className="text-2xl md:text-3xl font-bold text-text-primary">
+            <span className="section-plus">+</span> Experience
+          </h2>
+          <div className="text-right">
+            <span className="text-3xl md:text-4xl font-bold text-accent">
+              {experience.yearsCount}
+            </span>
+            <p className="text-text-muted text-[10px] tracking-[0.2em] uppercase font-mono whitespace-pre-line leading-relaxed mt-1">
+              {experience.yearsLabel}
+            </p>
+          </div>
         </div>
-      </div>
+      </ScrollReveal>
 
       {/* Experience Cards */}
-      <div className="flex flex-col gap-3">
+      <StaggerChildren stagger={120} direction="up" className="flex flex-col gap-3">
         {experience.entries.map((entry, index) => (
           <div
             key={index}
@@ -73,7 +55,7 @@ export default function ExperienceSection() {
             </div>
           </div>
         ))}
-      </div>
+      </StaggerChildren>
     </div>
   );
 }

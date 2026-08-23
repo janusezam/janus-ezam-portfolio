@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { socialLinks, contactMethods } from "@/data/socials";
 import type { SocialLink, ContactMethod } from "@/types";
+import ScrollReveal from "./ScrollReveal";
+import { StaggerChildren } from "./ScrollReveal";
 
 /* ─── Icon map for social links ────────────────────────── */
 function SocialIcon({ icon }: { icon: SocialLink["icon"] }) {
@@ -85,31 +86,11 @@ function ContactIcon({ icon }: { icon: ContactMethod["icon"] }) {
 }
 
 export default function ContactSection() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("visible");
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-
-    const el = sectionRef.current;
-    if (el) observer.observe(el);
-    return () => {
-      if (el) observer.unobserve(el);
-    };
-  }, []);
-
   return (
-    <div ref={sectionRef} className="section-fade-in grid grid-cols-1 md:grid-cols-2 gap-12">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
       {/* Find me on */}
-      <div>
+      <ScrollReveal direction="left" duration={700}>
+        <div>
         <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-3">
           <span className="section-plus">+</span> Find me on
         </h2>
@@ -148,10 +129,12 @@ export default function ContactSection() {
             </a>
           ))}
         </div>
-      </div>
+        </div>
+      </ScrollReveal>
 
       {/* Get in touch */}
-      <div>
+      <ScrollReveal direction="right" duration={700} delay={150}>
+        <div>
         <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-3">
           <span className="section-plus">+</span> Get in touch
         </h2>
@@ -195,7 +178,8 @@ export default function ContactSection() {
             </a>
           ))}
         </div>
-      </div>
+        </div>
+      </ScrollReveal>
     </div>
   );
 }

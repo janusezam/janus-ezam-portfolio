@@ -200,6 +200,65 @@ body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
+/* ─── Tech Card Slider ────────────────────────────────── */
+.tech-slider-card {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: var(--card-bg);
+  border-radius: 16px;
+  border: 1px solid var(--card-border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  box-sizing: border-box;
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+  overflow: hidden;
+}
+
+.tech-slider-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.02) 0%,
+    transparent 100%
+  );
+  pointer-events: none;
+  border-radius: 16px 16px 0 0;
+}
+
+/* Light mode card adjustments */
+:root .tech-slider-card {
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.08),
+    0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* Hover glow on the front card */
+.tech-slider-card:hover {
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.4),
+    0 0 20px color-mix(in srgb, var(--card-color, var(--accent)) 15%, transparent);
+  border-color: color-mix(in srgb, var(--card-color, var(--accent)) 30%, var(--card-border));
+}
+
+:root .tech-slider-card:hover {
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.12),
+    0 0 16px color-mix(in srgb, var(--card-color, var(--accent)) 10%, transparent);
+}
+
 /* ─── Card Hover ──────────────────────────────────────── */
 .card-hover {
   transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
@@ -345,4 +404,154 @@ body {
 
 .animate-fade-in {
   animation: fade-in 0.3s ease-out forwards;
+}
+
+/* ─── Scroll Reveal Animations ─────────────────────────────── */
+.scroll-reveal {
+  will-change: transform, opacity;
+  transition:
+    opacity var(--sr-duration, 700ms) cubic-bezier(0.16, 1, 0.3, 1),
+    transform var(--sr-duration, 700ms) cubic-bezier(0.16, 1, 0.3, 1),
+    filter var(--sr-duration, 700ms) cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--sr-delay, 0ms);
+}
+
+/* ── Direction: Up ── */
+.scroll-reveal--up {
+  opacity: 0;
+  transform: translateY(var(--sr-distance, 40px));
+}
+
+.scroll-reveal--up.scroll-reveal--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Direction: Down ── */
+.scroll-reveal--down {
+  opacity: 0;
+  transform: translateY(calc(var(--sr-distance, 40px) * -1));
+}
+
+.scroll-reveal--down.scroll-reveal--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Direction: Left ── */
+.scroll-reveal--left {
+  opacity: 0;
+  transform: translateX(calc(var(--sr-distance, 40px) * -1));
+}
+
+.scroll-reveal--left.scroll-reveal--visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ── Direction: Right ── */
+.scroll-reveal--right {
+  opacity: 0;
+  transform: translateX(var(--sr-distance, 40px));
+}
+
+.scroll-reveal--right.scroll-reveal--visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ── Direction: Fade (no translate) ── */
+.scroll-reveal--fade {
+  opacity: 0;
+}
+
+.scroll-reveal--fade.scroll-reveal--visible {
+  opacity: 1;
+}
+
+/* ── Direction: Scale ── */
+.scroll-reveal--scale {
+  opacity: 0;
+  transform: scale(0.92);
+}
+
+.scroll-reveal--scale.scroll-reveal--visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ── Direction: Blur ── */
+.scroll-reveal--blur {
+  opacity: 0;
+  filter: blur(8px);
+  transform: translateY(calc(var(--sr-distance, 40px) * 0.5));
+}
+
+.scroll-reveal--blur.scroll-reveal--visible {
+  opacity: 1;
+  filter: blur(0);
+  transform: translateY(0);
+}
+
+/* ─── Stagger Parent: children animate sequentially ──────── */
+.stagger-parent > * {
+  opacity: 0;
+  will-change: transform, opacity;
+  transition:
+    opacity var(--sr-duration, 600ms) cubic-bezier(0.16, 1, 0.3, 1),
+    transform var(--sr-duration, 600ms) cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.stagger-parent--up > * {
+  transform: translateY(var(--sr-distance, 30px));
+}
+
+.stagger-parent--down > * {
+  transform: translateY(calc(var(--sr-distance, 30px) * -1));
+}
+
+.stagger-parent--left > * {
+  transform: translateX(calc(var(--sr-distance, 30px) * -1));
+}
+
+.stagger-parent--right > * {
+  transform: translateX(var(--sr-distance, 30px));
+}
+
+.stagger-parent--scale > * {
+  transform: scale(0.9);
+}
+
+.stagger-parent--fade > * {
+  transform: none;
+}
+
+/* When parent becomes visible, animate each child with stagger */
+.stagger-parent--visible > * {
+  opacity: 1;
+  transform: translateY(0) translateX(0) scale(1);
+  filter: blur(0);
+}
+
+.stagger-parent--visible > *:nth-child(1)  { transition-delay: calc(var(--sr-stagger, 100ms) * 0); }
+.stagger-parent--visible > *:nth-child(2)  { transition-delay: calc(var(--sr-stagger, 100ms) * 1); }
+.stagger-parent--visible > *:nth-child(3)  { transition-delay: calc(var(--sr-stagger, 100ms) * 2); }
+.stagger-parent--visible > *:nth-child(4)  { transition-delay: calc(var(--sr-stagger, 100ms) * 3); }
+.stagger-parent--visible > *:nth-child(5)  { transition-delay: calc(var(--sr-stagger, 100ms) * 4); }
+.stagger-parent--visible > *:nth-child(6)  { transition-delay: calc(var(--sr-stagger, 100ms) * 5); }
+.stagger-parent--visible > *:nth-child(7)  { transition-delay: calc(var(--sr-stagger, 100ms) * 6); }
+.stagger-parent--visible > *:nth-child(8)  { transition-delay: calc(var(--sr-stagger, 100ms) * 7); }
+.stagger-parent--visible > *:nth-child(9)  { transition-delay: calc(var(--sr-stagger, 100ms) * 8); }
+.stagger-parent--visible > *:nth-child(10) { transition-delay: calc(var(--sr-stagger, 100ms) * 9); }
+.stagger-parent--visible > *:nth-child(n+11) { transition-delay: calc(var(--sr-stagger, 100ms) * 10); }
+
+/* ─── Reduced motion: respect user preference ──────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .scroll-reveal,
+  .stagger-parent > * {
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
 }
