@@ -4,8 +4,6 @@ export const techStack: TechCategory[] = [
   {
     category: "Languages",
     items: [
-      { name: "HTML", color: "#E34F26", icon: "/images/Techstack/HTML5.png", description: "Semantic markup & structure." },
-      { name: "CSS", color: "#1572B6", icon: "/images/Techstack/CSS3.png", description: "Styling & responsive layouts." },
       { name: "JavaScript", color: "#F7DF1E", icon: "/images/Techstack/JavaScript.png", description: "Dynamic web interactivity." },
       { name: "Java", color: "#ED8B00", icon: "/images/Techstack/Java.png", description: "Object-oriented programming." },
       { name: "PHP", color: "#777BB4", icon: "/images/Techstack/PHP.png", description: "Server-side scripting." },
@@ -15,6 +13,8 @@ export const techStack: TechCategory[] = [
   {
     category: "Frontend Frameworks & Libraries",
     items: [
+      { name: "HTML", color: "#E34F26", icon: "/images/Techstack/HTML5.png", description: "Semantic markup & structure." },
+      { name: "CSS", color: "#1572B6", icon: "/images/Techstack/CSS3.png", description: "Styling & responsive layouts." },
       { name: "React", color: "#61DAFB", icon: "/images/Techstack/React.png", description: "Component-based UI library." },
       { name: "Vite", color: "#646CFF", icon: "/images/Techstack/Vite.js.png", description: "Lightning-fast build tool." },
       { name: "Vue", color: "#4FC08D", icon: "/images/Techstack/Vue.js.png", description: "Progressive JS framework." },

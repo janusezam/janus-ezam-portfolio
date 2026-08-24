@@ -6,15 +6,21 @@ import Link from "next/link";
 import { projects } from "@/data/projects";
 import ScrollReveal from "./ScrollReveal";
 import { StaggerChildren } from "./ScrollReveal";
+
 export default function ProjectsSection() {
   const [activeGallery, setActiveGallery] = useState<{
     images: string[];
     index: number;
     title: string;
   } | null>(null);
-  const [displayMode, setDisplayMode] = useState<"mockup" | "full">("mockup");
+  
+  // Track display mode ("mockup" | "full") per project ID
+  const [displayModes, setDisplayModes] = useState<Record<string, "mockup" | "full">>({});
 
-
+  const getMode = (id: string): "mockup" | "full" => displayModes[id] || "mockup";
+  const setMode = (id: string, mode: "mockup" | "full") => {
+    setDisplayModes((prev) => ({ ...prev, [id]: mode }));
+  };
 
   // Keyboard navigation for modal
   useEffect(() => {
@@ -66,124 +72,182 @@ export default function ProjectsSection() {
         </ScrollReveal>
 
         <StaggerChildren stagger={200} direction="up" className="flex flex-col gap-8">
-          {projects.map((project, index) => (
-            <div
-              key={index}
-              className="bg-card-bg border border-card-border rounded-lg overflow-hidden card-hover"
-            >
-              <div className="flex flex-col lg:flex-row">
-                {/* Left: Image Showcase with Toggle */}
-                <div className="relative w-full lg:w-[50%] min-h-[320px] md:min-h-[380px] flex flex-col cursor-pointer select-none border-b lg:border-b-0 lg:border-r border-card-border overflow-hidden group/laptop">
-                  
-                  {/* Toggle Switch */}
-                  <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 flex bg-black/40 backdrop-blur-md rounded-lg p-1 border border-white/10 shadow-xl" onClick={(e) => e.stopPropagation()}>
-                    <button
-                      onClick={() => setDisplayMode("mockup")}
-                      className={`px-3 py-1.5 text-[9px] md:text-[10px] font-mono tracking-wider uppercase rounded-md transition-all ${displayMode === "mockup" ? "bg-accent text-white shadow-md scale-100" : "text-white/60 hover:text-white hover:bg-white/10 scale-95"}`}
+          {projects.map((project, index) => {
+            const currentMode = getMode(project.id);
+            return (
+              <div
+                key={project.id || index}
+                className="bg-card-bg border border-card-border rounded-lg overflow-hidden card-hover"
+              >
+                <div className="flex flex-col lg:flex-row">
+                  {/* Left: Image Showcase with Toggle & Hover View Image Effect */}
+                  <div className="relative w-full lg:w-[50%] min-h-[320px] md:min-h-[380px] flex flex-col select-none border-b lg:border-b-0 lg:border-r border-card-border overflow-hidden group/img">
+                    
+                    {/* Toggle Switch */}
+                    <div
+                      className="absolute top-4 left-1/2 -translate-x-1/2 z-30 flex bg-black/40 backdrop-blur-md rounded-lg p-1 border border-white/10 shadow-xl"
+                      onClick={(e) => e.stopPropagation()}
                     >
-                      Mockup View
-                    </button>
-                    <button
-                      onClick={() => setDisplayMode("full")}
-                      className={`px-3 py-1.5 text-[9px] md:text-[10px] font-mono tracking-wider uppercase rounded-md transition-all ${displayMode === "full" ? "bg-accent text-white shadow-md scale-100" : "text-white/60 hover:text-white hover:bg-white/10 scale-95"}`}
+                      <button
+                        onClick={() => setMode(project.id, "mockup")}
+                        className={`px-3 py-1.5 text-[9px] md:text-[10px] font-mono tracking-wider uppercase rounded-md transition-all ${
+                          currentMode === "mockup"
+                            ? "bg-accent text-white shadow-md scale-100"
+                            : "text-white/60 hover:text-white hover:bg-white/10 scale-95"
+                        }`}
+                      >
+                        Mockup View
+                      </button>
+                      <button
+                        onClick={() => setMode(project.id, "full")}
+                        className={`px-3 py-1.5 text-[9px] md:text-[10px] font-mono tracking-wider uppercase rounded-md transition-all ${
+                          currentMode === "full"
+                            ? "bg-accent text-white shadow-md scale-100"
+                            : "text-white/60 hover:text-white hover:bg-white/10 scale-95"
+                        }`}
+                      >
+                        Full View
+                      </button>
+                    </div>
+
+                    {/* Image Display Area (Clickable with Hover Animation) */}
+                    <div
+                      onClick={() => {
+                        const gallery = currentMode === "mockup" ? project.gallery : project.fullGallery;
+                        if (gallery && gallery.length > 0) {
+                          setActiveGallery({
+                            images: gallery,
+                            index: 0,
+                            title: project.title,
+                          });
+                        }
+                      }}
+                      className="w-full h-full flex flex-col p-6 items-center justify-between relative flex-1 cursor-pointer"
                     >
-                      Full View
-                    </button>
-                  </div>
+                      {/* Subtle Glow on Hover */}
+                      <div className="absolute inset-0 bg-gradient-to-tr from-accent/5 via-transparent to-accent/5 opacity-0 group-hover/img:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-                  {/* Image Display Area (Clickable) */}
-                  <div
-                    onClick={() => {
-                      const gallery = displayMode === "mockup" ? project.gallery : project.fullGallery;
-                      if (gallery) {
-                        setActiveGallery({
-                          images: gallery,
-                          index: 0,
-                          title: project.title,
-                        });
-                      }
-                    }}
-                    className="w-full h-full flex flex-col p-6 items-center justify-between relative flex-1 transition-transform duration-300 hover:scale-[1.02]"
-                  >
-                    {/* Image Container with Crossfade */}
-                    <div className="w-full flex-1 relative flex items-center justify-center py-6 md:py-8">
-                      {/* Mockup Image */}
-                      <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${displayMode === "mockup" ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"}`}>
-                        <div className="relative w-full h-full flex items-center justify-center">
-                          <Image
-                            src={project.image}
-                            alt={`${project.title} Mockup`}
-                            width={800}
-                            height={500}
-                            className="laptop-mockup-img max-h-full object-contain"
-                            priority
-                          />
-                        </div>
-                      </div>
-
-                      {/* Full Image */}
-                      {project.fullImage && (
-                        <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${displayMode === "full" ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"}`}>
-                          <div className="relative w-full h-full flex items-center justify-center rounded-lg overflow-hidden">
+                      {/* Image Container with Crossfade & Hover Scale */}
+                      <div className="w-full flex-1 relative flex items-center justify-center py-6 md:py-8 transition-transform duration-500 ease-out group-hover/img:scale-[1.03]">
+                        {/* Mockup Image */}
+                        <div
+                          className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${
+                            currentMode === "mockup" ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
+                          }`}
+                        >
+                          <div className="relative w-full h-full flex items-center justify-center">
                             <Image
-                              src={project.fullImage}
-                              alt={`${project.title} Full View`}
+                              src={project.image}
+                              alt={`${project.title} Mockup`}
                               width={800}
                               height={500}
-                              className="max-h-full object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.4)]"
-                              priority
+                              className="laptop-mockup-img max-h-full object-contain drop-shadow-xl"
+                              priority={index === 0}
                             />
                           </div>
                         </div>
-                      )}
+
+                        {/* Full Image */}
+                        {project.fullImage && (
+                          <div
+                            className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${
+                              currentMode === "full" ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
+                            }`}
+                          >
+                            <div className="relative w-full h-full flex items-center justify-center rounded-lg overflow-hidden">
+                              <Image
+                                src={project.fullImage}
+                                alt={`${project.title} Full View`}
+                                width={800}
+                                height={500}
+                                className="max-h-full object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.4)]"
+                                priority={index === 0}
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Hover Overlay with "View Image" Button */}
+                      <div className="absolute inset-0 bg-black/35 backdrop-blur-[2px] opacity-0 group-hover/img:opacity-100 transition-all duration-300 flex items-center justify-center pointer-events-none z-20">
+                        <div className="flex items-center gap-2.5 bg-accent/90 text-white font-mono text-xs tracking-wider uppercase px-5 py-3 rounded-full shadow-2xl transform translate-y-2 group-hover/img:translate-y-0 transition-transform duration-300">
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          </svg>
+                          <span>View Image</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right: Content Details */}
+                  <div className="flex-1 p-6 md:p-8 flex flex-col justify-between">
+                    <div>
+                      <h3 className="text-2xl font-bold text-text-primary mb-3 tracking-tight">
+                        {project.title}
+                      </h3>
+                      <p className="text-text-secondary text-sm md:text-base leading-relaxed mb-6 line-clamp-3">
+                        {project.description}
+                      </p>
+
+                      {/* Tech Tags preview */}
+                      <div className="flex flex-wrap gap-1.5 mb-6">
+                        {project.tags.slice(0, 5).map((tag, idx) => (
+                          <span
+                            key={idx}
+                            className="text-[11px] font-mono px-2 py-0.5 rounded border"
+                            style={{
+                              color: tag.color,
+                              borderColor: `${tag.color}35`,
+                              backgroundColor: `${tag.color}10`,
+                            }}
+                          >
+                            {tag.name}
+                          </span>
+                        ))}
+                        {project.tags.length > 5 && (
+                          <span className="text-[11px] font-mono px-2 py-0.5 rounded border border-card-border text-text-muted bg-surface">
+                            +{project.tags.length - 5} more
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Action Link */}
+                    <div>
+                      <Link
+                        href={`/project/${project.id}`}
+                        className="group inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white text-[10px] font-mono tracking-[0.15em] uppercase px-4 py-2.5 rounded-md transition-all shadow-md shadow-accent/20"
+                      >
+                        <span>View Details</span>
+                        <svg
+                          className="w-4 h-4 link-arrow transition-transform group-hover:translate-x-1"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={2}
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M17 8l4 4m0 0l-4 4m4-4H3"
+                          />
+                        </svg>
+                      </Link>
                     </div>
                   </div>
                 </div>
-
-                {/* Right: Content Details */}
-                <div className="flex-1 p-6 md:p-8 flex flex-col justify-center">
-                  <div>
-                    <h3 className="text-2xl font-bold text-text-primary mb-3 tracking-tight line-clamp-1">
-                      {project.title}
-                    </h3>
-                    <p className="text-text-secondary text-sm md:text-base leading-relaxed mb-6 line-clamp-1">
-                      {project.description}
-                    </p>
-                  </div>
-
-                  {/* Action Link */}
-                  <div>
-                    <Link
-                      href={`/project/${project.id}`}
-                      className="group inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white text-[10px] font-mono tracking-[0.15em] uppercase px-4 py-2.5 rounded-md transition-all"
-                    >
-                      <span>View Details</span>
-                      <svg
-                        className="w-4 h-4 link-arrow transition-transform group-hover:translate-x-1"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={2}
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M17 8l4 4m0 0l-4 4m4-4H3"
-                        />
-                      </svg>
-                    </Link>
-                  </div>
-                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </StaggerChildren>
       </div>
 
-      {/* Floating Centered Modal */}
+      {/* Floating Centered Modal with Left/Right Arrows & 1-6 Counter */}
       {activeGallery && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 md:p-8 animate-fade-in"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-4 md:p-8 animate-fade-in"
           onClick={() => setActiveGallery(null)}
         >
           {/* Modal Container */}
@@ -194,17 +258,16 @@ export default function ProjectsSection() {
             {/* Close Button */}
             <button
               onClick={() => setActiveGallery(null)}
-              className="absolute top-4 right-4 z-20 p-2 rounded-full bg-black/40 hover:bg-black/80 text-white transition-colors cursor-pointer backdrop-blur-sm"
+              className="absolute top-4 right-4 z-30 p-2.5 rounded-full bg-white/10 hover:bg-accent text-white transition-colors cursor-pointer backdrop-blur-sm border border-white/10"
               aria-label="Close modal"
             >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
 
-            {/* Image Display Area */}
-            <div className="relative w-full h-full flex items-center justify-center">
-              {/* Prev Button */}
+            {/* Left Nav Arrow */}
+            {activeGallery.images.length > 1 && (
               <button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -217,29 +280,31 @@ export default function ProjectsSection() {
                       : null
                   );
                 }}
-                className="absolute left-4 z-20 p-3 rounded-full bg-black/40 hover:bg-accent text-white transition-all border border-white/10 cursor-pointer backdrop-blur-sm"
+                className="absolute left-4 z-30 p-3 rounded-full bg-white/10 hover:bg-accent text-white transition-all border border-white/10 cursor-pointer backdrop-blur-sm shadow-xl"
                 aria-label="Previous image"
               >
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
                 </svg>
               </button>
+            )}
 
-              {/* The Image with fade effect */}
-              <div
-                key={activeGallery.index}
-                className="absolute inset-0 w-full h-full animate-fade-in p-2 md:p-8"
-              >
-                <Image
-                  src={activeGallery.images[activeGallery.index]}
-                  alt={`${activeGallery.title} - ${activeGallery.index + 1}`}
-                  fill
-                  className="object-contain"
-                  priority
-                />
-              </div>
+            {/* Image Display Area */}
+            <div
+              key={activeGallery.index}
+              className="relative w-full h-full animate-fade-in p-4 md:p-12 flex items-center justify-center"
+            >
+              <Image
+                src={activeGallery.images[activeGallery.index]}
+                alt={`${activeGallery.title} - ${activeGallery.index + 1}`}
+                fill
+                className="object-contain drop-shadow-2xl"
+                priority
+              />
+            </div>
 
-              {/* Next Button */}
+            {/* Right Nav Arrow */}
+            {activeGallery.images.length > 1 && (
               <button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -252,18 +317,18 @@ export default function ProjectsSection() {
                       : null
                   );
                 }}
-                className="absolute right-4 z-20 p-3 rounded-full bg-black/40 hover:bg-accent text-white transition-all border border-white/10 cursor-pointer backdrop-blur-sm"
+                className="absolute right-4 z-30 p-3 rounded-full bg-white/10 hover:bg-accent text-white transition-all border border-white/10 cursor-pointer backdrop-blur-sm shadow-xl"
                 aria-label="Next image"
               >
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                 </svg>
               </button>
-            </div>
+            )}
             
             {/* Numeric Indicator */}
-            <div className="absolute bottom-6 left-0 right-0 flex justify-center z-20 pointer-events-none">
-              <span className="bg-black/60 backdrop-blur-md px-4 py-1.5 rounded-full text-white font-mono text-sm border border-white/10 shadow-lg tracking-widest">
+            <div className="absolute bottom-4 left-0 right-0 flex justify-center z-30 pointer-events-none">
+              <span className="bg-black/75 backdrop-blur-md px-5 py-2 rounded-full text-white font-mono text-sm border border-white/10 shadow-2xl tracking-widest">
                 {activeGallery.index + 1} / {activeGallery.images.length}
               </span>
             </div>

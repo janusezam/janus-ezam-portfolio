@@ -2,6 +2,50 @@ import type { Project } from "@/types";
 
 export const projects: Project[] = [
   {
+    id: "salba-cdrrmo-rescue-app",
+    title: "SALBA CDRRMO Rescue App",
+    description:
+      "SALBA CDRRMO Rescue App is an AI-powered emergency management ecosystem that connects citizens, command centers, and rescue teams. It features a mobile app for civilian reporting, a machine learning-enhanced web dashboard that analyzes incident severity to optimize dispatching, and a dedicated responder app to coordinate on-the-ground rescue operations.",
+    features: [
+      "AI-Powered Incident Severity Analysis & Smart Dispatching",
+      "Civilian Mobile App for Emergency SOS & Incident Reporting",
+      "Dedicated Responder Mobile App for On-the-Ground Coordination",
+      "Command Center Web Dashboard with Live GIS Mapping & Unit Tracking",
+      "Real-Time Tri-Party Coordination (Citizen - Dispatch - Rescuer)",
+      "Automated Incident Lifecycle & Emergency Response Analytics",
+    ],
+    image: "/images/projects/capstone1.png",
+    fullImage: "/images/projects/capstone1full.png",
+    gallery: [
+      "/images/projects/capstone1.png",
+      "/images/projects/capstone2.png",
+      "/images/projects/capstone3.png",
+      "/images/projects/capstone4.png",
+      "/images/projects/capstone5.png",
+      "/images/projects/capstone6.png",
+    ],
+    fullGallery: [
+      "/images/projects/capstone1full.png",
+      "/images/projects/capstone2full.png",
+      "/images/projects/capstone3full.png",
+      "/images/projects/capstone4full.png",
+      "/images/projects/capstone5full.png",
+      "/images/projects/capstone6full.png",
+    ],
+    tags: [
+      { name: "MERN Stack", color: "#2563eb" },
+      { name: "Expo Go / React Native", color: "#61DAFB" },
+      { name: "Machine Learning (AI)", color: "#10A37F" },
+      { name: "MongoDB", color: "#47A248" },
+      { name: "Express.js", color: "#888888" },
+      { name: "React.js", color: "#61DAFB" },
+      { name: "Node.js", color: "#339933" },
+      { name: "Socket.io", color: "#8B5CF6" },
+      { name: "GIS & GPS Tracking", color: "#E0234E" },
+      { name: "Python / AI Engine", color: "#3776AB" },
+    ],
+  },
+  {
     id: "water-delivery-management-system",
     title: "Water Delivery Management System",
     description:
