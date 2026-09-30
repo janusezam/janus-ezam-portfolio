@@ -83,14 +83,23 @@ export interface Certification {
 export interface SocialLink {
   platform: string;
   url: string;
-  icon: "linkedin" | "github" | "facebook";
+  icon: string;
+  imageIcon?: string;
+  gradientFrom: string;
+  gradientTo: string;
+  handle?: string;
+  hoverWidth?: string;
 }
 
 export interface ContactMethod {
   label: string;
   value: string;
   url?: string;
-  icon: "email" | "at" | "messenger";
+  icon: string;
+  imageIcon?: string;
+  gradientFrom: string;
+  gradientTo: string;
+  hoverWidth?: string;
 }
 
 // ─── Marquee ─────────────────────────────────────────────

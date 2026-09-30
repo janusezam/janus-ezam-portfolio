@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import { ThemeProvider } from "@/context/ThemeContext";
-import CursorTubes from "@/components/CursorTubes";
 import { siteMeta } from "@/data/site";
 import "./globals.css";
 
@@ -56,7 +55,6 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col bg-background text-text-primary transition-colors duration-300">
         <ThemeProvider>
-          <CursorTubes />
           {children}
         </ThemeProvider>
       </body>

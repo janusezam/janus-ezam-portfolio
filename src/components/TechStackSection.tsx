@@ -108,7 +108,7 @@ function CardSlider({ items, categoryIndex }: CardSliderProps) {
           >
             {/* Card Number */}
             <span
-              className="text-[11px] font-mono tracking-wider"
+              className="text-xs font-mono tracking-wider font-bold mb-0.5"
               style={{ color: item.color }}
             >
               {String(idx + 1).padStart(2, "0")}
@@ -116,25 +116,25 @@ function CardSlider({ items, categoryIndex }: CardSliderProps) {
 
             {/* Icon */}
             {item.icon && (
-              <div className="relative w-10 h-10 sm:w-12 sm:h-12 my-2 flex-shrink-0">
+              <div className="relative w-14 h-14 sm:w-[68px] sm:h-[68px] my-1 flex-shrink-0">
                 <Image
                   src={item.icon}
                   alt={item.name}
                   fill
-                  className="object-contain drop-shadow-lg"
-                  sizes="48px"
+                  className="object-contain drop-shadow-xl"
+                  sizes="80px"
                 />
               </div>
             )}
 
             {/* Name */}
-            <h4 className="text-base sm:text-lg font-bold text-text-primary tracking-tight">
+            <h4 className="text-lg sm:text-xl font-black text-text-primary tracking-tight text-center leading-tight mt-1">
               {item.name}
             </h4>
 
             {/* Description */}
             {item.description && (
-              <p className="text-text-muted text-[10px] mt-1 leading-snug text-center">
+              <p className="text-text-secondary text-xs sm:text-[13px] mt-1 leading-snug text-center font-medium px-1">
                 {item.description}
               </p>
             )}
