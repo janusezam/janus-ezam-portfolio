@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { projects } from "@/data/projects";
 import ProjectDetailGallery from "@/components/ProjectDetailGallery";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -89,19 +90,30 @@ export default async function ProjectDetailsPage({ params }: { params: Promise<{
                   <span className="w-3 h-[2px] bg-accent"></span>
                   Technologies & Tools
                 </h3>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2.5">
                   {project.tags.map((tag, idx) => (
-                    <span
+                    <div
                       key={idx}
-                      className="tech-badge text-[11px] sm:text-xs py-1.5 px-3 rounded-md font-mono font-medium"
+                      className="tech-badge flex items-center gap-2 text-xs py-1.5 px-3 rounded-lg font-mono font-medium border transition-all"
                       style={{
                         color: tag.color,
                         borderColor: `${tag.color}40`,
-                        backgroundColor: `${tag.color}15`,
+                        backgroundColor: `${tag.color}10`,
                       }}
                     >
-                      {tag.name}
-                    </span>
+                      {tag.icon && (
+                        <div className="relative w-4 h-4 flex-shrink-0">
+                          <Image
+                            src={tag.icon}
+                            alt={tag.name}
+                            fill
+                            className="object-contain"
+                            sizes="16px"
+                          />
+                        </div>
+                      )}
+                      <span>{tag.name}</span>
+                    </div>
                   ))}
                 </div>
               </div>

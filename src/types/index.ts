@@ -54,6 +54,7 @@ export interface TechCategory {
 export interface ProjectTag {
   name: string;
   color: string;
+  icon?: string;
 }
 
 export interface Project {

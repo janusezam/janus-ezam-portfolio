@@ -191,26 +191,40 @@ export default function ProjectsSection() {
                         {project.description}
                       </p>
 
-                      {/* Tech Tags preview */}
-                      <div className="flex flex-wrap gap-1.5 mb-6">
-                        {project.tags.slice(0, 5).map((tag, idx) => (
-                          <span
+                      {/* Tech Stack Icons */}
+                      <div className="flex flex-wrap items-center gap-2 mb-6">
+                        {project.tags.map((tag, idx) => (
+                          <div
                             key={idx}
-                            className="text-[11px] font-mono px-2 py-0.5 rounded border"
+                            className="group/tag relative flex items-center justify-center w-9 h-9 rounded-lg bg-surface border border-card-border hover:border-accent/70 hover:bg-surface-border/30 transition-all duration-200 shadow-sm cursor-default"
                             style={{
-                              color: tag.color,
-                              borderColor: `${tag.color}35`,
-                              backgroundColor: `${tag.color}10`,
+                              boxShadow: `0 2px 8px ${tag.color}15`,
                             }}
                           >
-                            {tag.name}
-                          </span>
+                            {tag.icon ? (
+                              <div className="relative w-5 h-5 flex-shrink-0 group-hover/tag:scale-110 transition-transform">
+                                <Image
+                                  src={tag.icon}
+                                  alt={tag.name}
+                                  fill
+                                  className="object-contain"
+                                  sizes="20px"
+                                />
+                              </div>
+                            ) : (
+                              <span
+                                className="text-[10px] font-mono font-bold"
+                                style={{ color: tag.color }}
+                              >
+                                {tag.name}
+                              </span>
+                            )}
+                            {/* Hover Tooltip */}
+                            <span className="absolute -top-9 left-1/2 -translate-x-1/2 opacity-0 group-hover/tag:opacity-100 transition-all duration-200 pointer-events-none bg-black/90 text-white text-[10px] font-mono px-2.5 py-1 rounded-md whitespace-nowrap z-30 shadow-xl border border-white/10 tracking-wide">
+                              {tag.name}
+                            </span>
+                          </div>
                         ))}
-                        {project.tags.length > 5 && (
-                          <span className="text-[11px] font-mono px-2 py-0.5 rounded border border-card-border text-text-muted bg-surface">
-                            +{project.tags.length - 5} more
-                          </span>
-                        )}
                       </div>
                     </div>
 

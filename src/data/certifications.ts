@@ -13,4 +13,10 @@ export const certifications: Certification[] = [
     date: "July 25, 2026",
     image: "/images/certifications/azure-ai.png",
   },
+  {
+    title: "Introduction to AI Literacy and Responsible Use",
+    issuer: "Mapúa University & CHED (ACHIEVE)",
+    date: "Sept 14, 2026",
+    image: "/images/certifications/ai-literacy.png",
+  },
 ];
