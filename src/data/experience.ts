@@ -11,8 +11,8 @@ export const experience: ExperienceData = {
     },
     {
       title: "OJT / Internship",
-      organization: "Amazon Company",
-      status: "Ongoing",
+      organization: "Currently Seeking Internship Opportunities",
+      status: "Seeking",
     },
     {
       title: "Capstone Project",

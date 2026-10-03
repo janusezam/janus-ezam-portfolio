@@ -38,16 +38,20 @@ export default function Home() {
       {/* ─── Personal Information ─────────────────────────── */}
       <section
         id="personal-info"
-        className="w-full bg-background py-16 md:py-24"
+        className="w-full bg-background py-16 md:py-24 relative overflow-hidden"
       >
-        <div className="mx-auto max-w-6xl px-6 md:px-12 flex flex-col gap-16">
-          {/* Top: About */}
+        {/* Background Ambient Radial Glows */}
+        <div className="absolute top-1/4 -left-32 w-96 h-96 bg-accent/5 rounded-full blur-[128px] pointer-events-none" />
+        <div className="absolute bottom-10 -right-32 w-96 h-96 bg-accent/5 rounded-full blur-[128px] pointer-events-none" />
+
+        <div className="mx-auto max-w-6xl px-6 md:px-12 flex flex-col gap-10 md:gap-14 relative z-10">
+          {/* Top: About Card */}
           <div className="w-full">
             <AboutSection />
           </div>
           
           {/* Bottom: Experience & Education side-by-side */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-10 items-stretch">
             <ExperienceSection />
             <EducationSection />
           </div>

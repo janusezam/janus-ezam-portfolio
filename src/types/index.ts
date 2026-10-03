@@ -16,7 +16,7 @@ export interface Profile {
 }
 
 // ─── Experience ──────────────────────────────────────────
-export type ExperienceStatus = "Current" | "Ongoing" | "Completed";
+export type ExperienceStatus = "Current" | "Ongoing" | "Completed" | "Seeking" | "Looking";
 
 export interface ExperienceEntry {
   title: string;
@@ -35,6 +35,8 @@ export interface EducationEntry {
   degree: string;
   institution: string;
   year: string;
+  status?: string;
+  progressPercentage?: number;
 }
 
 // ─── Tech Stack ──────────────────────────────────────────

@@ -14,6 +14,7 @@
   --accent-hover: #06b6d4;
   --status-current: #0891b2;
   --status-ongoing: #059669;
+  --status-seeking: #d97706;
   --marquee-bg: #f8fafc;
   --marquee-text: #1e293b;
   --marquee-border: #cbd5e1;
@@ -38,6 +39,7 @@
   --accent-hover: #67e8f9;
   --status-current: #22d3ee;
   --status-ongoing: #38B2AC;
+  --status-seeking: #fbbf24;
   --marquee-bg: #0B1120;
   --marquee-text: #3A4A65;
   --marquee-border: #1E2D4A;
@@ -180,6 +182,12 @@ body {
   background: rgba(136, 136, 136, 0.15);
   color: #888888;
   border: 1px solid rgba(136, 136, 136, 0.3);
+}
+
+.badge-seeking {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--status-seeking);
+  border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
 /* ─── Tech Badge ──────────────────────────────────────── */

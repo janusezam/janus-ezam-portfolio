@@ -5,9 +5,9 @@ import ScrollReveal from "./ScrollReveal";
 
 export default function AboutSection() {
   return (
-    <div>
+    <div className="bg-card-bg border border-card-border rounded-xl p-6 md:p-8">
       <ScrollReveal direction="left" duration={600}>
-        <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-3">
+        <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">
           <span className="section-plus">+</span> About
         </h2>
       </ScrollReveal>
@@ -18,9 +18,9 @@ export default function AboutSection() {
         </p>
       </ScrollReveal>
 
-      <div className="space-y-5">
+      <div className="space-y-4">
         {profile.aboutParagraphs.map((paragraph, index) => (
-          <ScrollReveal key={index} direction="up" delay={200 + index * 120} duration={700}>
+          <ScrollReveal key={index} direction="up" delay={150 + index * 100} duration={600}>
             <p className="text-text-secondary text-sm md:text-base leading-relaxed">
               {paragraph}
             </p>
