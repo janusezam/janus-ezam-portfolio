@@ -1,56 +1,48 @@
 "use client";
 
 import { education } from "@/data/education";
-import ScrollReveal from "./ScrollReveal";
 import { StaggerChildren } from "./ScrollReveal";
 
 export default function EducationSection() {
   return (
-    <div className="bg-card-bg border border-card-border rounded-xl p-6 md:p-8 h-full flex flex-col justify-between">
+    <div className="bg-surface border border-surface-border rounded-lg p-6 sm:p-8 flex flex-col justify-between h-full">
       <div>
         {/* Header */}
-        <ScrollReveal direction="right" duration={600}>
-          <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-1">
-            <span className="section-plus">+</span> Education
-          </h2>
-        </ScrollReveal>
-
-        <ScrollReveal direction="right" delay={100} duration={600}>
-          <p className="text-text-muted text-[10px] tracking-[0.25em] uppercase font-mono mb-8">
-            ACADEMIC BACKGROUND
+        <div className="pb-6 border-b border-surface-border mb-6">
+          <h3 className="text-xl font-bold text-text-primary tracking-tight">
+            Education
+          </h3>
+          <p className="text-text-muted text-[11px] font-mono tracking-widest uppercase mt-1">
+            Academic Background
           </p>
-        </ScrollReveal>
+        </div>
 
-        {/* Education Timeline */}
-        <div className="relative ml-2">
-          {/* Continuous Vertical Timeline Line: Centered at 0px anchor */}
-          <div className="absolute left-0 top-2 bottom-2 w-[2px] -translate-x-1/2 bg-card-border" />
-
-          <StaggerChildren stagger={100} direction="up" className="flex flex-col gap-6">
+        {/* Timeline */}
+        <div className="relative pl-4 border-l border-surface-border space-y-6">
+          <StaggerChildren stagger={80} direction="up" className="flex flex-col gap-6">
             {education.map((entry, index) => {
               const isLatest = index === 0;
               return (
-                <div key={index} className="relative pl-6">
-                  {/* Timeline Circle Dot Node: Centered at 0px anchor */}
-                  <div
-                    className={`absolute left-0 top-1.5 w-3 h-3 -translate-x-1/2 rounded-full border-2 border-card-bg transition-colors ${
+                <div key={index} className="relative">
+                  {/* Timeline indicator node */}
+                  <span
+                    className={`absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full border-2 ${
                       isLatest
                         ? "bg-accent border-accent"
-                        : "bg-surface border-card-border"
+                        : "bg-background border-surface-border"
                     }`}
                   />
 
-                  {/* Details */}
-                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-1 sm:gap-4">
+                  <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
                     <div>
-                      <h3 className="text-sm md:text-base font-semibold text-text-primary">
+                      <h4 className="text-sm font-semibold text-text-primary">
                         {entry.degree}
-                      </h3>
-                      <p className="text-text-muted text-xs mt-0.5">
+                      </h4>
+                      <p className="text-text-secondary text-xs mt-0.5">
                         {entry.institution}
                       </p>
                     </div>
-                    <span className="text-xs font-mono text-text-muted shrink-0 mt-0.5 sm:mt-0">
+                    <span className="text-xs font-mono text-text-muted shrink-0">
                       {entry.year}
                     </span>
                   </div>

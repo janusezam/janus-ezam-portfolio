@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { certifications } from "@/data/certifications";
 import type { Certification } from "@/types";
-import ScrollReveal, { StaggerChildren } from "./ScrollReveal";
+import ScrollReveal from "./ScrollReveal";
 
 export default function CertificationsSection() {
   const [selectedCert, setSelectedCert] = useState<Certification | null>(null);
@@ -21,107 +21,127 @@ export default function CertificationsSection() {
   }, []);
 
   return (
-    <section id="certifications" className="w-full bg-background py-12 md:py-16">
+    <section id="certifications" className="w-full py-16 md:py-20 border-b border-surface-border">
       <div className="mx-auto max-w-6xl px-6 md:px-12">
-        {/* Header */}
-        <ScrollReveal direction="up" duration={600}>
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h2 className="text-xl md:text-2xl font-bold text-text-primary mb-1">
-                <span className="section-plus">+</span> Certifications
-              </h2>
-              <p className="text-text-muted text-[10px] tracking-[0.2em] uppercase font-mono">
-                OFFICIAL CREDENTIALS
-              </p>
+        {/* Section Heading */}
+        <ScrollReveal direction="up" duration={500}>
+          <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 pb-6 border-b border-surface-border mb-10">
+            <div className="flex items-center gap-3">
+              <span className="text-accent font-mono text-xs tracking-widest font-semibold">05</span>
+              <span className="text-text-muted font-mono text-xs">/</span>
+              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-text-primary">Certifications</h2>
             </div>
-            <span className="text-text-muted text-xs tracking-[0.15em] uppercase font-mono border border-card-border px-3 py-1 rounded-full">
-              {certifications.length} Certified
-            </span>
+            <div className="flex items-center gap-3">
+              <span className="text-text-muted text-[11px] font-mono tracking-widest uppercase">
+                Official Credentials
+              </span>
+              <span className="text-xs font-mono text-text-secondary px-2.5 py-0.5 rounded border border-surface-border bg-surface">
+                {certifications.length} Credentials
+              </span>
+            </div>
           </div>
         </ScrollReveal>
 
-        {/* Left-Aligned Single Frame Grid */}
-        <StaggerChildren stagger={150} direction="scale" className="flex flex-wrap justify-start items-stretch gap-6 md:gap-8">
+        {/* Credentials Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {certifications.map((cert, index) => (
-            <div
+            <ScrollReveal
               key={index}
-              onClick={() => cert.image && setSelectedCert(cert)}
-              title={cert.title}
-              className="group relative w-full sm:w-[380px] md:w-[440px] aspect-[4/3] bg-surface border-2 border-card-border hover:border-accent/80 rounded-xl shadow-md hover:shadow-xl hover:shadow-accent/10 transition-all duration-300 cursor-pointer overflow-hidden"
+              direction="up"
+              duration={500}
+              delay={index * 80}
             >
-              {cert.image && (
-                <Image
-                  src={cert.image}
-                  alt={cert.title}
-                  fill
-                  className="object-contain p-3 group-hover:scale-105 transition-transform duration-500"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 440px"
-                />
-              )}
-
-              {/* Hover View Indicator Overlay */}
-              <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[2px]">
-                <span className="w-12 h-12 rounded-full bg-accent/90 text-white flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform duration-300">
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
+              <div
+                onClick={() => cert.image && setSelectedCert(cert)}
+                className="bg-surface border border-surface-border rounded-lg overflow-hidden flex flex-col justify-between h-full hover:border-accent/50 transition-colors cursor-pointer group"
+              >
+                {/* Certificate Image Frame */}
+                {cert.image && (
+                  <div className="relative w-full aspect-[4/3] bg-background border-b border-surface-border p-4 flex items-center justify-center overflow-hidden">
+                    <Image
+                      src={cert.image}
+                      alt={cert.title}
+                      fill
+                      className="object-contain p-2 group-hover:scale-[1.02] transition-transform duration-300"
+                      sizes="(max-width: 768px) 100vw, 360px"
                     />
-                  </svg>
-                </span>
+                    <div className="absolute bottom-2 right-2 px-2 py-0.5 rounded bg-surface/90 border border-surface-border text-[9px] font-mono uppercase tracking-wider text-text-muted opacity-0 group-hover:opacity-100 transition-opacity">
+                      Enlarge
+                    </div>
+                  </div>
+                )}
+
+                {/* Details */}
+                <div className="p-5 flex flex-col justify-between flex-1 gap-4">
+                  <div>
+                    <h3 className="text-sm font-semibold text-text-primary leading-snug group-hover:text-accent transition-colors">
+                      {cert.title}
+                    </h3>
+                    {cert.issuer && (
+                      <p className="text-xs text-text-muted mt-1.5 leading-relaxed">
+                        {cert.issuer}
+                      </p>
+                    )}
+                  </div>
+
+                  {cert.date && (
+                    <div className="pt-3 border-t border-surface-border flex items-center justify-between">
+                      <span className="text-[10px] font-mono uppercase text-text-muted">Issued</span>
+                      <span className="text-xs font-mono text-text-secondary">{cert.date}</span>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
+            </ScrollReveal>
           ))}
-        </StaggerChildren>
+        </div>
       </div>
 
-      {/* Lightbox Modal */}
+      {/* Accessible Lightbox Modal */}
       {selectedCert && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md transition-opacity duration-300"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 sm:p-6 animate-fade-in"
           onClick={() => setSelectedCert(null)}
+          role="dialog"
+          aria-modal="true"
         >
           <div
-            className="relative max-w-4xl w-full bg-card-bg border border-card-border rounded-xl overflow-hidden p-4 md:p-6 shadow-2xl"
+            className="relative max-w-4xl w-full bg-surface border border-surface-border rounded-lg overflow-hidden p-5 flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="flex items-center justify-between mb-4 border-b border-card-border/60 pb-3">
+            <div className="flex items-start justify-between pb-4 border-b border-surface-border mb-4">
               <div>
-                <h4 className="text-base md:text-lg font-bold text-text-primary">
+                <h4 className="text-base font-semibold text-text-primary">
                   {selectedCert.title}
                 </h4>
                 {selectedCert.issuer && (
-                  <p className="text-text-muted text-xs font-mono">
+                  <p className="text-xs font-mono text-text-muted mt-1">
                     {selectedCert.issuer} {selectedCert.date ? `• ${selectedCert.date}` : ""}
                   </p>
                 )}
               </div>
               <button
                 onClick={() => setSelectedCert(null)}
-                className="w-8 h-8 rounded-full bg-surface border border-card-border flex items-center justify-center text-text-muted hover:text-text-primary hover:border-accent transition-colors"
-                aria-label="Close modal"
+                type="button"
+                className="p-1 rounded text-text-muted hover:text-text-primary hover:bg-background transition-colors"
+                aria-label="Close dialog"
               >
-                ✕
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </button>
             </div>
 
             {/* Modal Certificate Image Display */}
             {selectedCert.image && (
-              <div className="relative w-full aspect-[4/3] max-h-[75vh] bg-surface rounded-lg overflow-hidden flex items-center justify-center border border-card-border/50">
+              <div className="relative w-full aspect-[4/3] max-h-[70vh] bg-background rounded border border-surface-border overflow-hidden flex items-center justify-center">
                 <Image
                   src={selectedCert.image}
                   alt={selectedCert.title}
                   fill
-                  className="object-contain p-2"
-                  sizes="100vw"
+                  className="object-contain p-3"
+                  sizes="900px"
                   priority
                 />
               </div>

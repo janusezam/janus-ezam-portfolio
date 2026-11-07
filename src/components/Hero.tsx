@@ -2,9 +2,7 @@
 
 import Image from "next/image";
 import { profile } from "@/data/profile";
-import ThemeToggle from "./ThemeToggle";
 import ScrollReveal from "./ScrollReveal";
-
 import { useTheme } from "@/context/ThemeContext";
 
 export default function Hero() {
@@ -15,14 +13,14 @@ export default function Hero() {
       ? (profile.profileImageLight || "/images/profile-dark.jpg")
       : (profile.profileImageDark || "/images/profile-light.jpg");
 
-  // Parse tagline: wrap text between * * in <em>
+  // Render tagline with clean emphasis (no decorative serif)
   const renderTagline = (text: string) => {
     const parts = text.split(/\*(.*?)\*/);
     return parts.map((part, i) =>
       i % 2 === 1 ? (
-        <em key={i} className="text-accent not-italic font-serif italic">
+        <span key={i} className="text-accent font-medium">
           {part}
-        </em>
+        </span>
       ) : (
         <span key={i}>{part}</span>
       )
@@ -32,97 +30,104 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative w-full bg-background py-16 md:py-24 lg:py-32"
+      className="relative w-full py-16 md:py-24 border-b border-surface-border"
     >
-      <div className="mx-auto max-w-6xl px-6 md:px-12 flex flex-col md:flex-row items-center gap-12 md:gap-16">
-        <ScrollReveal direction="left" duration={800}>
-        <div className="flex-shrink-0 relative group">
-          {/* Subtle Ambient Backlight Glow */}
-          <div className="absolute -inset-1 bg-gradient-to-r from-accent/20 to-accent/5 rounded-xl blur-lg opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
-          
-          <div className="profile-image-wrapper relative w-64 h-72 md:w-72 md:h-80 lg:w-80 lg:h-96 rounded-xl border border-card-border group-hover:border-accent/50 transition-all duration-500 shadow-2xl overflow-hidden">
-            <Image
-              src={currentProfileImage}
-              alt={`${profile.firstName} ${profile.lastName}`}
-              fill
-              quality={95}
-              className="object-cover object-center contrast-[1.03] saturate-[1.02] group-hover:scale-[1.03] transition-all duration-500 ease-out"
-              priority
-              sizes="(max-width: 768px) 256px, (max-width: 1024px) 288px, 320px"
-            />
+      <div className="mx-auto max-w-6xl px-6 md:px-12">
+        <div className="flex flex-col-reverse md:flex-row items-start md:items-center justify-between gap-12 lg:gap-16">
+          {/* Left / Main Text Content */}
+          <div className="flex-1 flex flex-col items-start gap-6 max-w-2xl">
+            <ScrollReveal direction="up" duration={500}>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-surface border border-surface-border">
+                <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+                <span className="text-[11px] font-mono tracking-widest uppercase text-text-secondary font-medium">
+                  {profile.subtitle}
+                </span>
+              </div>
+            </ScrollReveal>
+
+            <ScrollReveal direction="up" duration={500} delay={100}>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-text-primary leading-[1.1]">
+                {profile.firstName} <span className="text-accent">{profile.lastName}</span>
+              </h1>
+            </ScrollReveal>
+
+            <ScrollReveal direction="up" duration={500} delay={200}>
+              <p className="text-base sm:text-lg text-text-secondary leading-relaxed">
+                {renderTagline(profile.tagline)}
+              </p>
+            </ScrollReveal>
+
+            <ScrollReveal direction="up" duration={500} delay={300}>
+              <div className="flex items-center gap-2 text-text-muted text-xs font-mono">
+                <svg
+                  className="w-3.5 h-3.5 text-accent shrink-0"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                </svg>
+                <span>{profile.location}</span>
+              </div>
+            </ScrollReveal>
+
+            {/* CTAs */}
+            <ScrollReveal direction="up" duration={500} delay={400}>
+              <div className="flex flex-wrap items-center gap-3 pt-2">
+                <a
+                  href="#projects"
+                  className="px-5 py-2.5 rounded-md bg-accent text-white text-xs font-mono tracking-wider uppercase font-semibold hover:bg-accent-hover transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-accent/40"
+                >
+                  View Projects
+                </a>
+                <a
+                  href={`mailto:${profile.email}`}
+                  className="px-5 py-2.5 rounded-md border border-surface-border bg-surface text-text-primary text-xs font-mono tracking-wider uppercase font-medium hover:border-accent hover:text-accent transition-colors focus:outline-none focus:ring-2 focus:ring-accent/40"
+                  id="email-me-btn"
+                >
+                  Get in Touch
+                </a>
+                {profile.resumeUrl && profile.resumeUrl !== "#" && (
+                  <a
+                    href={profile.resumeUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-4 py-2.5 rounded-md text-text-muted hover:text-accent text-xs font-mono tracking-wider uppercase transition-colors"
+                  >
+                    Resume ↗
+                  </a>
+                )}
+              </div>
+            </ScrollReveal>
           </div>
+
+          {/* Right: Authentic Profile Photo */}
+          <ScrollReveal direction="scale" duration={600} delay={150}>
+            <div className="relative shrink-0">
+              <div className="relative w-56 h-64 sm:w-64 sm:h-72 md:w-72 md:h-80 rounded-lg border border-surface-border overflow-hidden bg-surface shadow-sm">
+                <Image
+                  src={currentProfileImage}
+                  alt={`${profile.firstName} ${profile.lastName}`}
+                  fill
+                  quality={95}
+                  priority
+                  className="object-cover object-center"
+                  sizes="(max-width: 640px) 224px, (max-width: 768px) 256px, 288px"
+                />
+              </div>
+            </div>
+          </ScrollReveal>
         </div>
-        </ScrollReveal>
-
-        <ScrollReveal direction="right" duration={800} delay={200}>
-        <div className="flex flex-col items-center md:items-start text-center md:text-left gap-5">
-          {/* Tagline */}
-          <p className="tagline text-text-secondary text-sm md:text-base tracking-wide font-light italic">
-            {renderTagline(profile.tagline)}
-          </p>
-
-          {/* Name */}
-          <div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-text-primary leading-tight">
-              {profile.firstName}
-            </h1>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-accent leading-tight">
-              {profile.lastName}
-            </h1>
-          </div>
-
-          {/* Subtitle */}
-          <p className="text-text-muted text-xs tracking-[0.25em] uppercase font-mono">
-            {profile.subtitle}
-          </p>
-
-          {/* Location */}
-          <div className="flex items-center gap-2 text-text-secondary text-sm">
-            <svg
-              className="w-4 h-4 text-text-muted"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={1.5}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
-              />
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
-              />
-            </svg>
-            <span>{profile.location}</span>
-          </div>
-
-          {/* CTA Buttons */}
-          <div className="flex items-center gap-4 mt-2">
-            <a
-              href={profile.resumeUrl}
-              className="px-6 py-2.5 border border-text-muted/40 text-text-primary text-xs tracking-[0.2em] uppercase font-mono rounded-sm hover:border-accent hover:text-accent transition-all duration-300"
-              id="get-resume-btn"
-            >
-              GET RESUME
-            </a>
-            <a
-              href={`mailto:${profile.email}`}
-              className="px-6 py-2.5 border border-text-muted/40 text-text-primary text-xs tracking-[0.2em] uppercase font-mono rounded-sm hover:border-accent hover:text-accent transition-all duration-300"
-              id="email-me-btn"
-            >
-              EMAIL ME
-            </a>
-          </div>
-
-          {/* Theme Toggle */}
-          <div className="mt-2">
-            <ThemeToggle />
-          </div>
-        </div>
-        </ScrollReveal>
       </div>
     </section>
   );

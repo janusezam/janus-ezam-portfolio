@@ -1,20 +1,7 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { siteMeta } from "@/data/site";
 import "./globals.css";
-
-const inter = Inter({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const playfair = Playfair_Display({
-  variable: "--font-serif",
-  subsets: ["latin"],
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: siteMeta.title,
@@ -35,7 +22,7 @@ export default function RootLayout({
     <html
       lang="en"
       data-theme="dark"
-      className={`${inter.variable} ${playfair.variable} h-full antialiased`}
+      className="h-full antialiased"
       suppressHydrationWarning
     >
       <head>
@@ -53,7 +40,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-full flex flex-col bg-background text-text-primary transition-colors duration-300">
+      <body className="min-h-full flex flex-col bg-background text-text-primary transition-colors duration-200">
         <ThemeProvider>
           {children}
         </ThemeProvider>

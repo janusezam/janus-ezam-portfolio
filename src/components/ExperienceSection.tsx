@@ -2,7 +2,6 @@
 
 import { experience } from "@/data/experience";
 import type { ExperienceStatus } from "@/types";
-import ScrollReveal from "./ScrollReveal";
 import { StaggerChildren } from "./ScrollReveal";
 
 const statusClass: Record<ExperienceStatus, string> = {
@@ -15,47 +14,47 @@ const statusClass: Record<ExperienceStatus, string> = {
 
 export default function ExperienceSection() {
   return (
-    <div className="bg-card-bg border border-card-border rounded-xl p-6 md:p-8 h-full flex flex-col justify-between">
+    <div className="bg-surface border border-surface-border rounded-lg p-6 sm:p-8 flex flex-col justify-between h-full">
       <div>
-        {/* Header row */}
-        <ScrollReveal direction="left" duration={600}>
-          <div className="flex items-start justify-between mb-6">
-            <div>
-              <h2 className="text-2xl md:text-3xl font-bold text-text-primary">
-                <span className="section-plus">+</span> Experience
-              </h2>
-              <p className="text-text-muted text-[10px] tracking-[0.2em] uppercase font-mono mt-1">
-                CAREER & PROJECTS
-              </p>
-            </div>
-            <div className="text-right">
-              <span className="text-2xl md:text-3xl font-bold text-accent">
-                {experience.yearsCount}
-              </span>
-              <p className="text-text-muted text-[9px] tracking-[0.15em] uppercase font-mono whitespace-pre-line leading-tight mt-0.5">
-                {experience.yearsLabel}
-              </p>
-            </div>
+        {/* Header */}
+        <div className="flex items-start justify-between pb-6 border-b border-surface-border mb-6">
+          <div>
+            <h3 className="text-xl font-bold text-text-primary tracking-tight">
+              Experience
+            </h3>
+            <p className="text-text-muted text-[11px] font-mono tracking-widest uppercase mt-1">
+              Career & Capstone
+            </p>
           </div>
-        </ScrollReveal>
+          <div className="text-right">
+            <span className="text-2xl font-bold font-mono text-accent">
+              {experience.yearsCount}
+            </span>
+            <p className="text-text-muted text-[9px] font-mono tracking-wider uppercase">
+              Years Study
+            </p>
+          </div>
+        </div>
 
-        {/* Experience List (Directly inside single card) */}
-        <StaggerChildren stagger={100} direction="up" className="flex flex-col divide-y divide-card-border/60">
+        {/* Experience List */}
+        <StaggerChildren stagger={80} direction="up" className="flex flex-col divide-y divide-surface-border">
           {experience.entries.map((entry, index) => (
             <div
               key={index}
               className="py-4 first:pt-0 last:pb-0 flex items-start justify-between gap-4"
             >
               <div className="min-w-0 flex-1">
-                <h3 className="text-sm md:text-base font-semibold text-text-primary">
+                <h4 className="text-sm font-semibold text-text-primary">
                   {entry.title}
-                </h3>
-                <p className="text-text-muted text-xs mt-1 leading-relaxed">
+                </h4>
+                <p className="text-text-secondary text-xs mt-1 leading-relaxed">
                   {entry.organization}
                 </p>
               </div>
               <span
-                className={`text-[10px] tracking-[0.15em] uppercase font-mono px-3 py-1 rounded-full whitespace-nowrap shrink-0 ${statusClass[entry.status]}`}
+                className={`text-[10px] tracking-wider uppercase font-mono px-2.5 py-0.5 rounded shrink-0 font-medium ${
+                  statusClass[entry.status] || "badge-completed"
+                }`}
               >
                 {entry.status}
               </span>

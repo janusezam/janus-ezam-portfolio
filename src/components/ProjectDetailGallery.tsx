@@ -46,16 +46,16 @@ export default function ProjectDetailGallery({ project }: ProjectDetailGalleryPr
       {/* View Mode Toggle Switch */}
       {project.fullImage && (
         <div className="flex justify-end">
-          <div className="flex bg-card-bg rounded-lg p-1 border border-card-border shadow-sm">
+          <div className="flex bg-surface rounded border border-surface-border p-0.5 text-[11px] font-mono">
             <button
               onClick={() => {
                 setDisplayMode("mockup");
                 if (selectedIndex >= mockups.length) setSelectedIndex(0);
               }}
-              className={`px-3 py-1.5 text-[11px] font-mono tracking-wider uppercase rounded-md transition-all ${
+              className={`px-3 py-1 rounded transition-colors ${
                 displayMode === "mockup"
-                  ? "bg-accent text-white shadow-sm font-semibold"
-                  : "text-text-secondary hover:text-text-primary hover:bg-surface"
+                  ? "bg-accent text-white font-medium"
+                  : "text-text-muted hover:text-text-primary"
               }`}
             >
               Mockup View
@@ -65,10 +65,10 @@ export default function ProjectDetailGallery({ project }: ProjectDetailGalleryPr
                 setDisplayMode("full");
                 if (selectedIndex >= fullViews.length) setSelectedIndex(0);
               }}
-              className={`px-3 py-1.5 text-[11px] font-mono tracking-wider uppercase rounded-md transition-all ${
+              className={`px-3 py-1 rounded transition-colors ${
                 displayMode === "full"
-                  ? "bg-accent text-white shadow-sm font-semibold"
-                  : "text-text-secondary hover:text-text-primary hover:bg-surface"
+                  ? "bg-accent text-white font-medium"
+                  : "text-text-muted hover:text-text-primary"
               }`}
             >
               Full View
@@ -77,110 +77,125 @@ export default function ProjectDetailGallery({ project }: ProjectDetailGalleryPr
         </div>
       )}
 
-      {/* Main Image Container: Clean Picture with Hover Animation & View Image Button */}
+      {/* Main Image Container */}
       <div
         onClick={() => setIsModalOpen(true)}
-        className="group relative bg-card-bg border border-card-border rounded-2xl overflow-hidden shadow-xl p-6 md:p-10 flex items-center justify-center min-h-[380px] md:min-h-[500px] cursor-pointer transition-all duration-300 hover:border-accent/50 hover:shadow-2xl"
+        className="group relative bg-surface border border-surface-border rounded-lg overflow-hidden p-6 md:p-8 flex items-center justify-center min-h-[380px] md:min-h-[460px] cursor-pointer hover:border-accent/50 transition-colors"
       >
-        {/* Subtle Background Glow on Hover */}
-        <div className="absolute inset-0 bg-gradient-to-tr from-accent/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-
-        {/* The Image with Hover Scale Animation */}
-        <div className="relative w-full h-[320px] md:h-[450px] flex items-center justify-center transition-transform duration-500 ease-out group-hover:scale-[1.03]">
+        <div className="relative w-full h-[300px] md:h-[400px] flex items-center justify-center">
           <Image
             src={activeImage}
             alt={`${project.title} ${displayMode === "mockup" ? "Mockup" : "Full View"}`}
             fill
-            className="object-contain drop-shadow-2xl"
+            className="object-contain group-hover:scale-[1.02] transition-transform duration-300"
             priority
           />
         </div>
 
-        {/* Hover Overlay with "View Image" Button */}
-        <div className="absolute inset-0 bg-black/35 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center pointer-events-none">
-          <div className="flex items-center gap-2.5 bg-accent/90 text-white font-mono text-xs tracking-wider uppercase px-5 py-3 rounded-full shadow-2xl transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-            </svg>
-            <span>View Image</span>
-          </div>
+        {/* Quiet Enlarge Hint */}
+        <div className="absolute bottom-3 right-3 px-2.5 py-1 rounded bg-background/90 border border-surface-border text-[10px] font-mono uppercase tracking-wider text-text-muted opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1.5">
+          <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+          </svg>
+          <span>Enlarge</span>
         </div>
       </div>
 
-      {/* Fullscreen Lightbox Modal (with Nav Arrows & 1-6 Counter) */}
+      {/* Thumbnails Row */}
+      {currentList.length > 1 && (
+        <div className="flex items-center gap-3 overflow-x-auto pb-2">
+          {currentList.map((img, idx) => (
+            <button
+              key={idx}
+              onClick={() => setSelectedIndex(idx)}
+              className={`relative w-20 h-14 shrink-0 rounded border overflow-hidden transition-colors ${
+                selectedIndex === idx
+                  ? "border-accent ring-1 ring-accent"
+                  : "border-surface-border opacity-70 hover:opacity-100"
+              }`}
+            >
+              <Image
+                src={img}
+                alt={`Thumbnail ${idx + 1}`}
+                fill
+                className="object-cover"
+                sizes="80px"
+              />
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Accessible Full Screen Modal */}
       {isModalOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-4 md:p-8 animate-fade-in"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 sm:p-6 animate-fade-in"
           onClick={() => setIsModalOpen(false)}
+          role="dialog"
+          aria-modal="true"
         >
           <div
-            className="relative w-full max-w-6xl h-[85vh] flex flex-col justify-center items-center"
+            className="relative w-full max-w-5xl h-[80vh] flex flex-col justify-between bg-surface border border-surface-border rounded-lg overflow-hidden p-4"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Close Button */}
-            <button
-              onClick={() => setIsModalOpen(false)}
-              className="absolute top-4 right-4 z-30 p-2.5 rounded-full bg-white/10 hover:bg-accent text-white transition-colors cursor-pointer backdrop-blur-sm border border-white/10"
-              aria-label="Close modal"
-            >
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
+            {/* Header */}
+            <div className="flex items-center justify-between pb-3 border-b border-surface-border">
+              <span className="text-sm font-semibold text-text-primary">
+                {project.title}
+              </span>
+              <div className="flex items-center gap-3">
+                <span className="text-xs font-mono text-text-muted">
+                  {selectedIndex + 1} / {currentList.length}
+                </span>
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  type="button"
+                  className="p-1 rounded text-text-muted hover:text-text-primary hover:bg-background transition-colors"
+                  aria-label="Close dialog"
+                >
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
 
-            {/* Prev Navigation Arrow */}
-            {currentList.length > 1 && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setSelectedIndex((prev) => (prev - 1 + currentList.length) % currentList.length);
-                }}
-                className="absolute left-4 z-30 p-3 rounded-full bg-white/10 hover:bg-accent text-white transition-all border border-white/10 cursor-pointer backdrop-blur-sm shadow-xl"
-                aria-label="Previous image"
-              >
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-            )}
-
-            {/* Modal Image */}
-            <div
-              key={`modal-${selectedIndex}-${displayMode}`}
-              className="relative w-full h-full animate-fade-in p-4 md:p-12 flex items-center justify-center"
-            >
+            {/* Modal Image Display */}
+            <div className="relative flex-1 w-full my-4 flex items-center justify-center">
               <Image
                 src={activeImage}
                 alt={`${project.title} - ${selectedIndex + 1}`}
                 fill
-                className="object-contain drop-shadow-2xl"
+                className="object-contain"
+                sizes="(max-width: 1200px) 100vw, 1100px"
                 priority
               />
             </div>
 
-            {/* Next Navigation Arrow */}
+            {/* Navigation Controls */}
             {currentList.length > 1 && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setSelectedIndex((prev) => (prev + 1) % currentList.length);
-                }}
-                className="absolute right-4 z-30 p-3 rounded-full bg-white/10 hover:bg-accent text-white transition-all border border-white/10 cursor-pointer backdrop-blur-sm shadow-xl"
-                aria-label="Next image"
-              >
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
+              <div className="flex items-center justify-between pt-3 border-t border-surface-border">
+                <button
+                  type="button"
+                  onClick={() =>
+                    setSelectedIndex((prev) => (prev - 1 + currentList.length) % currentList.length)
+                  }
+                  className="px-3 py-1.5 rounded border border-surface-border text-xs font-mono uppercase tracking-wider text-text-secondary hover:text-text-primary hover:border-accent transition-colors"
+                >
+                  ← Previous
+                </button>
+                <span className="text-[11px] font-mono text-text-muted">
+                  Use arrow keys or click buttons to navigate
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setSelectedIndex((prev) => (prev + 1) % currentList.length)}
+                  className="px-3 py-1.5 rounded border border-surface-border text-xs font-mono uppercase tracking-wider text-text-secondary hover:text-text-primary hover:border-accent transition-colors"
+                >
+                  Next →
+                </button>
+              </div>
             )}
-
-            {/* 1-6 Counter Indicator */}
-            <div className="absolute bottom-4 left-0 right-0 flex justify-center z-30 pointer-events-none">
-              <span className="bg-black/75 backdrop-blur-md px-5 py-2 rounded-full text-white font-mono text-sm border border-white/10 shadow-2xl tracking-widest">
-                {selectedIndex + 1} / {currentList.length}
-              </span>
-            </div>
           </div>
         </div>
       )}

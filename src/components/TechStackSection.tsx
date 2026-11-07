@@ -1,157 +1,166 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { techStack } from "@/data/techStack";
 import ScrollReveal from "./ScrollReveal";
+import LogoCloud, { type BrandLogo } from "@/components/ui/logo-cloud";
 
 export default function TechStackSection() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const totalSkills = techStack.reduce((acc, cat) => acc + cat.items.length, 0);
+
+  // Close modal on Escape key press
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsModalOpen(false);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  // Extract all authentic brand logos from Janus's tech stack
+  const brandLogos: BrandLogo[] = techStack
+    .flatMap((cat) => cat.items)
+    .filter((item): item is typeof item & { icon: string } => Boolean(item.icon))
+    .map((item) => ({
+      name: item.name,
+      image: item.icon,
+    }));
+
   return (
-    <div>
-      <ScrollReveal direction="blur" duration={700}>
-        <div className="flex items-center justify-between mb-14">
-          <div>
-            <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">
-              <span className="section-plus">+</span> Tech Stack
-            </h2>
-            <p className="text-text-muted text-[10px] tracking-[0.25em] uppercase font-mono">
-              TECHNOLOGIES & DEV
-            </p>
-          </div>
-          <span className="text-text-muted text-xs tracking-[0.15em] uppercase font-mono border border-card-border px-3 py-1.5 rounded-full">
-            {techStack.reduce((acc, cat) => acc + cat.items.length, 0)} Skills
-          </span>
-        </div>
-      </ScrollReveal>
-
-      <div className="flex flex-col gap-12">
-        {techStack.map((category, catIndex) => (
-          <ScrollReveal
-            key={catIndex}
-            direction={catIndex % 2 === 0 ? "left" : "right"}
-            duration={700}
-            delay={100}
-          >
-            <div
-              className={`flex flex-col ${
-                catIndex % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"
-              } items-center gap-10 lg:gap-16`}
-            >
-              {/* Text Side */}
-              <div className="w-full lg:w-[40%] flex flex-col justify-center">
-                <p className="text-accent text-[10px] tracking-[0.3em] uppercase font-mono mb-2">
-                  {String(catIndex + 1).padStart(2, "0")} / {String(techStack.length).padStart(2, "0")}
-                </p>
-                <h3 className="text-xl md:text-2xl font-bold text-text-primary mb-3 tracking-tight">
-                  {category.category}
-                </h3>
-                <p className="text-text-secondary text-sm leading-relaxed mb-5">
-                  {category.items.map((i) => i.name).join(" · ")}
-                </p>
-                <div className="h-[1px] bg-card-border w-16" />
-              </div>
-
-              {/* Card Slider Side */}
-              <div className="w-full lg:w-[60%] flex justify-center">
-                <CardSlider items={category.items} categoryIndex={catIndex} />
-              </div>
+    <section id="tech-stack" className="w-full py-16 md:py-20 border-b border-surface-border">
+      <div className="mx-auto max-w-6xl px-6 md:px-12">
+        {/* Section Heading */}
+        <ScrollReveal direction="up" duration={500}>
+          <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 pb-6 border-b border-surface-border mb-10">
+            <div className="flex items-center gap-3">
+              <span className="text-accent font-mono text-xs tracking-widest font-semibold">03</span>
+              <span className="text-text-muted font-mono text-xs">/</span>
+              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-text-primary">
+                Tech Stack & Contributions
+              </h2>
             </div>
-          </ScrollReveal>
-        ))}
-      </div>
-    </div>
-  );
-}
+            <div className="flex items-center gap-3">
+              <span className="text-text-muted text-[11px] font-mono tracking-widest uppercase">
+                Tools & GitHub Activity
+              </span>
+              <span className="text-xs font-mono text-text-secondary px-2.5 py-0.5 rounded border border-surface-border bg-surface">
+                {totalSkills} Skills
+              </span>
+            </div>
+          </div>
+        </ScrollReveal>
 
-// ─── Card Slider Component ─────────────────────────────────
-interface CardSliderProps {
-  items: typeof techStack[0]["items"];
-  categoryIndex: number;
-}
-
-function CardSlider({ items, categoryIndex }: CardSliderProps) {
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  const handleClick = () => {
-    setActiveIndex((prev) => (prev + 1) % items.length);
-  };
-
-  // Show up to 4 stacked cards
-  const visibleCount = Math.min(items.length, 4);
-
-  return (
-    <div className="relative w-[180px] h-[230px] sm:w-[200px] sm:h-[250px] cursor-pointer select-none" onClick={handleClick}>
-      {items.map((item, idx) => {
-        // Calculate position relative to active
-        const offset = (idx - activeIndex + items.length) % items.length;
-
-        // Only render visible cards
-        if (offset >= visibleCount) return null;
-
-        const scale = 1 - offset * 0.05;
-        const translateY = offset * -18;
-        const translateX = offset * 14;
-        const opacity = offset === 0 ? 1 : Math.max(0.4, 1 - offset * 0.2);
-        const zIndex = items.length - offset;
-        const rotate = offset * -3;
-
-        return (
-          <div
-            key={`${categoryIndex}-${idx}`}
-            className="tech-slider-card"
-            style={{
-              zIndex,
-              transform: `translateY(${translateY}px) translateX(${translateX}px) scale(${scale}) rotate(${rotate}deg)`,
-              opacity,
-              "--card-color": item.color,
-            } as React.CSSProperties}
-          >
-            {/* Card Number */}
-            <span
-              className="text-xs font-mono tracking-wider font-bold mb-0.5"
-              style={{ color: item.color }}
-            >
-              {String(idx + 1).padStart(2, "0")}
-            </span>
-
-            {/* Icon */}
-            {item.icon && (
-              <div className="relative w-14 h-14 sm:w-[68px] sm:h-[68px] my-1 flex-shrink-0">
-                <Image
-                  src={item.icon}
-                  alt={item.name}
-                  fill
-                  className="object-contain drop-shadow-xl"
-                  sizes="80px"
-                />
-              </div>
-            )}
-
-            {/* Name */}
-            <h4 className="text-lg sm:text-xl font-black text-text-primary tracking-tight text-center leading-tight mt-1">
-              {item.name}
-            </h4>
-
-            {/* Description */}
-            {item.description && (
-              <p className="text-text-secondary text-xs sm:text-[13px] mt-1 leading-snug text-center font-medium px-1">
-                {item.description}
-              </p>
-            )}
-
-            {/* Bottom accent bar */}
-            <div
-              className="absolute bottom-0 left-0 right-0 h-[2px] rounded-b-2xl opacity-60"
-              style={{ backgroundColor: item.color }}
+        {/* ─── GitHub Contributions Graph & Dual Marquee Logo Cloud Hero ─── */}
+        <ScrollReveal direction="up" duration={500} delay={100}>
+          <div>
+            <LogoCloud
+              brandLogos={brandLogos}
+              username="@janusezam"
+              summary="GitHub contributions & core technology stack"
+              duration={28}
+              onViewDetails={() => setIsModalOpen(true)}
             />
           </div>
-        );
-      })}
+        </ScrollReveal>
+      </div>
 
-      {/* Click hint */}
-      <p className="absolute -bottom-9 left-0 right-0 text-center text-text-muted text-[9px] tracking-[0.2em] uppercase font-mono opacity-70">
-        Click to cycle
-      </p>
-    </div>
+      {/* ─── Accessible Skills Breakdown Modal Dialog ─── */}
+      {isModalOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 sm:p-6 animate-fade-in"
+          onClick={() => setIsModalOpen(false)}
+          role="dialog"
+          aria-modal="true"
+        >
+          <div
+            className="relative max-w-4xl w-full max-h-[85vh] bg-surface border border-surface-border rounded-lg overflow-hidden flex flex-col p-6 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="flex items-start justify-between pb-4 border-b border-surface-border mb-6">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-accent font-mono text-xs tracking-widest font-semibold">03</span>
+                  <span className="text-text-muted font-mono text-xs">/</span>
+                  <h3 className="text-lg sm:text-xl font-bold tracking-tight text-text-primary">
+                    Detailed Categorized Skills
+                  </h3>
+                </div>
+                <p className="text-xs font-mono text-text-muted">
+                  {totalSkills} Technologies across {techStack.length} specialized development areas
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(false)}
+                className="p-1.5 rounded text-text-muted hover:text-text-primary hover:bg-background transition-colors cursor-pointer"
+                aria-label="Close dialog"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Modal Content: Categorized Grid (Scrollable) */}
+            <div className="overflow-y-auto pr-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {techStack.map((group, groupIdx) => (
+                <div
+                  key={groupIdx}
+                  className="bg-background border border-surface-border rounded-lg p-4 flex flex-col justify-between"
+                >
+                  <div className="flex items-center justify-between pb-2 border-b border-surface-border mb-3">
+                    <h4 className="text-xs font-mono uppercase tracking-wider text-text-muted font-semibold">
+                      {group.category}
+                    </h4>
+                    <span className="text-[10px] font-mono text-text-muted">
+                      {String(groupIdx + 1).padStart(2, "0")}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-2">
+                    {group.items.map((item, itemIdx) => (
+                      <div
+                        key={itemIdx}
+                        className="flex items-center justify-between gap-3 p-1.5 rounded hover:bg-surface transition-colors"
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          {item.icon ? (
+                            <div className="relative w-5 h-5 shrink-0">
+                              <Image
+                                src={item.icon}
+                                alt={item.name}
+                                fill
+                                className="object-contain"
+                                sizes="20px"
+                              />
+                            </div>
+                          ) : (
+                            <div className="w-5 h-5 rounded bg-surface-border/50 flex items-center justify-center font-mono text-[10px] font-bold text-text-primary">
+                              {item.name[0]}
+                            </div>
+                          )}
+                          <span className="text-xs font-medium text-text-primary truncate">
+                            {item.name}
+                          </span>
+                        </div>
+
+                        {item.description && (
+                          <span className="text-[10px] font-mono text-text-muted text-right truncate max-w-[120px]">
+                            {item.description}
+                          </span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+    </section>
   );
 }
