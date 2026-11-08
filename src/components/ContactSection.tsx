@@ -22,7 +22,7 @@ export default function ContactSection() {
         <ScrollReveal direction="up" duration={500}>
           <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 pb-6 border-b border-surface-border mb-10">
             <div className="flex items-center gap-3">
-              <span className="text-accent font-mono text-xs tracking-widest font-semibold">06</span>
+              <span className="text-accent font-mono text-xs tracking-widest font-semibold">07</span>
               <span className="text-text-muted font-mono text-xs">/</span>
               <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-text-primary">Contact & Connect</h2>
             </div>

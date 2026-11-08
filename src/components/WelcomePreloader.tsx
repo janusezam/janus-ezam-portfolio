@@ -64,18 +64,18 @@ export default function WelcomePreloader({
 
     document.body.style.overflow = "hidden";
 
-    // Sequence stages
-    const timer1 = setTimeout(() => setStep1Done(true), 500);
-    const timer2 = setTimeout(() => setStep2Done(true), 1050);
+    // Sequence stages: timed to allow full appreciation of CLI animation & scramble
+    const timer1 = setTimeout(() => setStep1Done(true), 1600);
+    const timer2 = setTimeout(() => setStep2Done(true), 3300);
     const timer3 = setTimeout(() => {
       setStep3Done(true);
       setShowWelcome(true);
-    }, 1550);
+    }, 4800);
 
-    // Auto-dismiss after scramble finishes and user reads the welcome
+    // Auto-dismiss after scramble resolves and user comfortably reads the message
     const timerDismiss = setTimeout(() => {
       dismiss();
-    }, 3400);
+    }, 8500);
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" || e.key === " ") {
@@ -186,11 +186,12 @@ export default function WelcomePreloader({
           {/* Step 4: Text Scramble Effect "Welcome To My Portfolio" */}
           {showWelcome && (
             <div className="pt-3 border-t border-surface-border mt-4 animate-fade-in">
-              <div className="text-[11px] font-mono uppercase tracking-widest text-text-muted mb-1.5">
-                STATUS: READY
+              <div className="text-[11px] font-mono uppercase tracking-widest text-text-muted mb-1.5 flex items-center justify-between">
+                <span>STATUS: READY</span>
+                <span className="text-[10px] text-emerald-500 font-mono">100% loaded</span>
               </div>
               <div className="text-base sm:text-xl font-bold tracking-tight text-accent font-mono py-1">
-                <SpecialText speed={18} delay={0}>
+                <SpecialText speed={28} delay={0.1}>
                   Welcome To My Portfolio
                 </SpecialText>
               </div>

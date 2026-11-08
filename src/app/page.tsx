@@ -10,6 +10,7 @@ import EducationSection from "@/components/EducationSection";
 import TechStackSection from "@/components/TechStackSection";
 import ProjectsSection from "@/components/ProjectsSection";
 import CertificationsSection from "@/components/CertificationsSection";
+import GallerySection from "@/components/GallerySection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
@@ -83,7 +84,10 @@ export default function Home() {
           {/* ─── 05 / Certifications ──────────────────────────── */}
           <CertificationsSection />
 
-          {/* ─── 06 / Contact & Connect ───────────────────────── */}
+          {/* ─── 06 / Gallery ─────────────────────────────────── */}
+          <GallerySection />
+
+          {/* ─── 07 / Contact & Connect ───────────────────────── */}
           <ContactSection />
         </main>
 
