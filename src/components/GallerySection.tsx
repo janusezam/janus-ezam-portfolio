@@ -20,7 +20,7 @@ export default function GallerySection() {
             </div>
             <div className="flex items-center gap-3">
               <span className="text-text-muted text-[11px] font-mono tracking-widest uppercase">
-                Academic Journey & Milestones
+                Academic Journey & Milestones (2023 – 2026)
               </span>
               <span className="text-xs font-mono text-text-secondary px-2.5 py-0.5 rounded border border-surface-border bg-surface">
                 {academicGalleryItems.length} Moments
@@ -34,8 +34,8 @@ export default function GallerySection() {
           <div className="rounded-lg border border-surface-border bg-surface/50 overflow-hidden shadow-sm">
             <PictureRailGallery
               items={academicGalleryItems}
-              eyebrow="ACADEMIC ARCHIVE · 2022 – 2024"
-              heading="A curated picture rail of achievements, defense, and hands-on laboratory milestones."
+              eyebrow="ACADEMIC ARCHIVE · 2023 – 2026"
+              heading="A curated picture rail of achievements and milestones."
               caption="Slide frames along the rail, hover to illuminate, or click to lift and inspect the gallery label on the back."
               autoplay={true}
               interval={3000}

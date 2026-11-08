@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import type { Project } from "@/types";
 
@@ -24,10 +25,14 @@ export default function ProjectDetailGallery({ project }: ProjectDetailGalleryPr
   const currentList = displayMode === "mockup" ? mockups : fullViews;
   const activeImage = currentList[selectedIndex] || currentList[0] || project.image;
 
-  // Keyboard navigation when modal is open
+  // Keyboard navigation when modal is open & Lock background scroll
   useEffect(() => {
+    if (!isModalOpen) return;
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (!isModalOpen) return;
       if (e.key === "Escape") setIsModalOpen(false);
       if (e.key === "ArrowLeft") {
         setSelectedIndex((prev) => (prev - 1 + currentList.length) % currentList.length);
@@ -38,7 +43,10 @@ export default function ProjectDetailGallery({ project }: ProjectDetailGalleryPr
     };
 
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, [isModalOpen, currentList.length]);
 
   return (
@@ -126,79 +134,82 @@ export default function ProjectDetailGallery({ project }: ProjectDetailGalleryPr
         </div>
       )}
 
-      {/* Accessible Full Screen Modal */}
-      {isModalOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 sm:p-6 animate-fade-in"
-          onClick={() => setIsModalOpen(false)}
-          role="dialog"
-          aria-modal="true"
-        >
+      {/* Accessible Full Screen Modal (Portaled Directly to Body, No Doom Scrolling) */}
+      {isModalOpen &&
+        typeof document !== "undefined" &&
+        createPortal(
           <div
-            className="relative w-full max-w-5xl h-[80vh] flex flex-col justify-between bg-surface border border-surface-border rounded-lg overflow-hidden p-4"
-            onClick={(e) => e.stopPropagation()}
+            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/85 backdrop-blur-xs p-4 sm:p-6 animate-fade-in"
+            onClick={() => setIsModalOpen(false)}
+            role="dialog"
+            aria-modal="true"
           >
-            {/* Header */}
-            <div className="flex items-center justify-between pb-3 border-b border-surface-border">
-              <span className="text-sm font-semibold text-text-primary">
-                {project.title}
-              </span>
-              <div className="flex items-center gap-3">
-                <span className="text-xs font-mono text-text-muted">
-                  {selectedIndex + 1} / {currentList.length}
+            <div
+              className="relative w-full max-w-4xl max-h-[85vh] flex flex-col justify-between bg-surface border border-surface-border rounded-xl overflow-hidden p-4 sm:p-5 shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between pb-3 border-b border-surface-border shrink-0">
+                <span className="text-sm font-semibold text-text-primary">
+                  {project.title}
                 </span>
-                <button
-                  onClick={() => setIsModalOpen(false)}
-                  type="button"
-                  className="p-1 rounded text-text-muted hover:text-text-primary hover:bg-background transition-colors"
-                  aria-label="Close dialog"
-                >
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
+                <div className="flex items-center gap-3">
+                  <span className="text-xs font-mono text-text-muted">
+                    {selectedIndex + 1} / {currentList.length}
+                  </span>
+                  <button
+                    onClick={() => setIsModalOpen(false)}
+                    type="button"
+                    className="p-1.5 rounded-md text-text-muted hover:text-text-primary hover:bg-background transition-colors cursor-pointer"
+                    aria-label="Close dialog"
+                  >
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
               </div>
-            </div>
 
-            {/* Modal Image Display */}
-            <div className="relative flex-1 w-full my-4 flex items-center justify-center">
-              <Image
-                src={activeImage}
-                alt={`${project.title} - ${selectedIndex + 1}`}
-                fill
-                className="object-contain"
-                sizes="(max-width: 1200px) 100vw, 1100px"
-                priority
-              />
-            </div>
-
-            {/* Navigation Controls */}
-            {currentList.length > 1 && (
-              <div className="flex items-center justify-between pt-3 border-t border-surface-border">
-                <button
-                  type="button"
-                  onClick={() =>
-                    setSelectedIndex((prev) => (prev - 1 + currentList.length) % currentList.length)
-                  }
-                  className="px-3 py-1.5 rounded border border-surface-border text-xs font-mono uppercase tracking-wider text-text-secondary hover:text-text-primary hover:border-accent transition-colors"
-                >
-                  ← Previous
-                </button>
-                <span className="text-[11px] font-mono text-text-muted">
-                  Use arrow keys or click buttons to navigate
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setSelectedIndex((prev) => (prev + 1) % currentList.length)}
-                  className="px-3 py-1.5 rounded border border-surface-border text-xs font-mono uppercase tracking-wider text-text-secondary hover:text-text-primary hover:border-accent transition-colors"
-                >
-                  Next →
-                </button>
+              {/* Modal Image Display */}
+              <div className="relative flex-1 w-full my-3 min-h-[300px] max-h-[55vh] flex items-center justify-center">
+                <Image
+                  src={activeImage}
+                  alt={`${project.title} - ${selectedIndex + 1}`}
+                  fill
+                  className="object-contain"
+                  sizes="(max-width: 1200px) 100vw, 1000px"
+                  priority
+                />
               </div>
-            )}
-          </div>
-        </div>
-      )}
+
+              {/* Navigation Controls */}
+              {currentList.length > 1 && (
+                <div className="flex items-center justify-between pt-3 border-t border-surface-border shrink-0">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setSelectedIndex((prev) => (prev - 1 + currentList.length) % currentList.length)
+                    }
+                    className="px-3 py-1.5 rounded-md border border-surface-border text-xs font-mono uppercase tracking-wider text-text-secondary hover:text-text-primary hover:border-accent transition-colors cursor-pointer"
+                  >
+                    ← Previous
+                  </button>
+                  <span className="text-[11px] font-mono text-text-muted hidden sm:inline">
+                    Use arrow keys or click buttons to navigate
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedIndex((prev) => (prev + 1) % currentList.length)}
+                    className="px-3 py-1.5 rounded-md border border-surface-border text-xs font-mono uppercase tracking-wider text-text-secondary hover:text-text-primary hover:border-accent transition-colors cursor-pointer"
+                  >
+                    Next →
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>,
+          document.body
+        )}
     </div>
   );
 }

@@ -21,7 +21,7 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-40 w-full bg-background/95 backdrop-blur-sm border-b border-surface-border">
       <div className="mx-auto max-w-6xl px-6 md:px-12 h-16 flex items-center justify-between">
-        {/* Left: Brand & Availability */}
+        {/* Left: Brand */}
         <div className="flex items-center gap-4">
           <Link
             href="/"
@@ -29,12 +29,6 @@ export default function Navbar() {
           >
             {profile.firstName} {profile.lastName}
           </Link>
-          <div className="hidden sm:flex items-center gap-2 pl-3 border-l border-surface-border">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-[11px] font-mono uppercase tracking-wider text-text-muted">
-              Available for work
-            </span>
-          </div>
         </div>
 
         {/* Desktop Nav */}

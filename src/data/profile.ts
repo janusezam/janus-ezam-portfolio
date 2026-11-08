@@ -6,7 +6,7 @@ export const profile: Profile = {
   tagline: "— let's build something *remarkable* together.",
   subtitle: "ASPIRING WEB DEVELOPER",
   location: "Malaybalay City, Bukidnon, Philippines",
-  resumeUrl: "#",
+  resumeUrl: "/Janus_Ezam_Tagud_Resume.pdf",
   email: "janusezam@gmail.com",
   profileImage: "/images/profile-dark.jpg",
   profileImageDark: "/images/profile-light.jpg",

@@ -16,11 +16,8 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   };
 }
 
-export function generateStaticParams() {
-  return projects.map((p) => ({
-    id: p.id,
-  }));
-}
+// Generate pages on demand
+export const dynamic = "force-dynamic";
 
 export default async function ProjectDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;

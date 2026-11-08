@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import Link from "next/link";
 import { projects } from "@/data/projects";
@@ -21,10 +22,14 @@ export default function ProjectsSection() {
     setDisplayModes((prev) => ({ ...prev, [id]: mode }));
   };
 
-  // Keyboard navigation for modal
+  // Keyboard navigation for modal & Lock background scroll
   useEffect(() => {
+    if (!activeGallery) return;
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (!activeGallery) return;
       if (e.key === "Escape") setActiveGallery(null);
       if (e.key === "ArrowLeft") {
         setActiveGallery((prev) =>
@@ -49,7 +54,10 @@ export default function ProjectsSection() {
     };
 
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, [activeGallery]);
 
   return (
@@ -230,95 +238,98 @@ export default function ProjectsSection() {
         </div>
       </div>
 
-      {/* Accessible Lightbox Modal */}
-      {activeGallery && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 sm:p-6 animate-fade-in"
-          onClick={() => setActiveGallery(null)}
-          role="dialog"
-          aria-modal="true"
-        >
+      {/* Accessible Lightbox Modal (Portaled Directly to Body, No Doom Scrolling) */}
+      {activeGallery &&
+        typeof document !== "undefined" &&
+        createPortal(
           <div
-            className="relative w-full max-w-5xl h-[80vh] flex flex-col justify-between bg-surface border border-surface-border rounded-lg overflow-hidden p-4"
-            onClick={(e) => e.stopPropagation()}
+            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/85 backdrop-blur-xs p-4 sm:p-6 animate-fade-in"
+            onClick={() => setActiveGallery(null)}
+            role="dialog"
+            aria-modal="true"
           >
-            {/* Modal Header */}
-            <div className="flex items-center justify-between pb-3 border-b border-surface-border">
-              <span className="text-sm font-semibold text-text-primary">
-                {activeGallery.title}
-              </span>
-              <div className="flex items-center gap-3">
-                <span className="text-xs font-mono text-text-muted">
-                  {activeGallery.index + 1} / {activeGallery.images.length}
+            <div
+              className="relative w-full max-w-4xl max-h-[85vh] flex flex-col justify-between bg-surface border border-surface-border rounded-xl overflow-hidden p-4 sm:p-5 shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Modal Header */}
+              <div className="flex items-center justify-between pb-3 border-b border-surface-border shrink-0">
+                <span className="text-sm font-semibold text-text-primary">
+                  {activeGallery.title}
                 </span>
-                <button
-                  onClick={() => setActiveGallery(null)}
-                  type="button"
-                  className="p-1 rounded text-text-muted hover:text-text-primary hover:bg-background transition-colors"
-                  aria-label="Close dialog"
-                >
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
+                <div className="flex items-center gap-3">
+                  <span className="text-xs font-mono text-text-muted">
+                    {activeGallery.index + 1} / {activeGallery.images.length}
+                  </span>
+                  <button
+                    onClick={() => setActiveGallery(null)}
+                    type="button"
+                    className="p-1.5 rounded-md text-text-muted hover:text-text-primary hover:bg-background transition-colors cursor-pointer"
+                    aria-label="Close dialog"
+                  >
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
               </div>
-            </div>
 
-            {/* Modal Image Area */}
-            <div className="relative flex-1 w-full my-4 flex items-center justify-center">
-              <Image
-                src={activeGallery.images[activeGallery.index]}
-                alt={`${activeGallery.title} - View ${activeGallery.index + 1}`}
-                fill
-                className="object-contain"
-                sizes="(max-width: 1200px) 100vw, 1100px"
-                priority
-              />
-            </div>
-
-            {/* Modal Footer Controls */}
-            {activeGallery.images.length > 1 && (
-              <div className="flex items-center justify-between pt-3 border-t border-surface-border">
-                <button
-                  type="button"
-                  onClick={() =>
-                    setActiveGallery((prev) =>
-                      prev
-                        ? {
-                            ...prev,
-                            index: (prev.index - 1 + prev.images.length) % prev.images.length,
-                          }
-                        : null
-                    )
-                  }
-                  className="px-3 py-1.5 rounded border border-surface-border text-xs font-mono uppercase tracking-wider text-text-secondary hover:text-text-primary hover:border-accent transition-colors"
-                >
-                  ← Previous
-                </button>
-                <span className="text-[11px] font-mono text-text-muted">
-                  Use arrow keys or click buttons to navigate
-                </span>
-                <button
-                  type="button"
-                  onClick={() =>
-                    setActiveGallery((prev) =>
-                      prev
-                        ? {
-                            ...prev,
-                            index: (prev.index + 1) % prev.images.length,
-                          }
-                        : null
-                    )
-                  }
-                  className="px-3 py-1.5 rounded border border-surface-border text-xs font-mono uppercase tracking-wider text-text-secondary hover:text-text-primary hover:border-accent transition-colors"
-                >
-                  Next →
-                </button>
+              {/* Modal Image Area */}
+              <div className="relative flex-1 w-full my-3 min-h-[300px] max-h-[55vh] flex items-center justify-center">
+                <Image
+                  src={activeGallery.images[activeGallery.index]}
+                  alt={`${activeGallery.title} - View ${activeGallery.index + 1}`}
+                  fill
+                  className="object-contain"
+                  sizes="(max-width: 1200px) 100vw, 1000px"
+                  priority
+                />
               </div>
-            )}
-          </div>
-        </div>
-      )}
+
+              {/* Modal Footer Controls */}
+              {activeGallery.images.length > 1 && (
+                <div className="flex items-center justify-between pt-3 border-t border-surface-border shrink-0">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setActiveGallery((prev) =>
+                        prev
+                          ? {
+                              ...prev,
+                              index: (prev.index - 1 + prev.images.length) % prev.images.length,
+                            }
+                          : null
+                      )
+                    }
+                    className="px-3 py-1.5 rounded-md border border-surface-border text-xs font-mono uppercase tracking-wider text-text-secondary hover:text-text-primary hover:border-accent transition-colors cursor-pointer"
+                  >
+                    ← Previous
+                  </button>
+                  <span className="text-[11px] font-mono text-text-muted hidden sm:inline">
+                    Use arrow keys or click buttons to navigate
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setActiveGallery((prev) =>
+                        prev
+                          ? {
+                              ...prev,
+                              index: (prev.index + 1) % prev.images.length,
+                            }
+                          : null
+                      )
+                    }
+                    className="px-3 py-1.5 rounded-md border border-surface-border text-xs font-mono uppercase tracking-wider text-text-secondary hover:text-text-primary hover:border-accent transition-colors cursor-pointer"
+                  >
+                    Next →
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>,
+          document.body
+        )}
     </section>
   );
 }

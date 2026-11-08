@@ -9,10 +9,44 @@ import ScrollReveal from "./ScrollReveal";
 export default function ContactSection() {
   const [copied, setCopied] = useState(false);
 
+  // Contact form state
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+  const [status, setStatus] = useState<"idle" | "sent">("idle");
+
   const copyEmail = () => {
     navigator.clipboard.writeText(profile.email);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.email || !formData.message) return;
+
+    const emailSubject = encodeURIComponent(
+      formData.subject.trim() || `Portfolio Inquiry from ${formData.name.trim() || "Visitor"}`
+    );
+    const emailBody = encodeURIComponent(
+      `Hello Janus,\n\n${formData.message}\n\nFrom:\n${formData.name || "Anonymous"}\nEmail: ${formData.email}`
+    );
+
+    // Trigger user's mail client
+    window.location.href = `mailto:${profile.email}?subject=${emailSubject}&body=${emailBody}`;
+
+    setStatus("sent");
+    setTimeout(() => setStatus("idle"), 5000);
   };
 
   return (
@@ -27,83 +61,198 @@ export default function ContactSection() {
               <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-text-primary">Contact & Connect</h2>
             </div>
             <p className="text-text-muted text-[11px] font-mono tracking-widest uppercase">
-              Get in Touch
+              Get in Touch & Send Message
             </p>
           </div>
         </ScrollReveal>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-          {/* Direct Communication (6 cols) */}
-          <div className="lg:col-span-6 flex flex-col gap-6">
+          {/* Left Column: Interactive Contact Form (7 cols) */}
+          <div id="contact-form" className="lg:col-span-7 flex flex-col gap-6 scroll-mt-24">
             <ScrollReveal direction="up" duration={500} delay={100}>
-              <div className="bg-surface border border-surface-border rounded-lg p-6 sm:p-8">
-                <h3 className="text-lg font-bold text-text-primary tracking-tight mb-2">
-                  Let&apos;s build something reliable together.
-                </h3>
-                <p className="text-sm text-text-secondary leading-relaxed mb-6">
-                  Currently seeking OJT / internship opportunities and open to discussing full-stack web projects. Reach out directly via email or message.
-                </p>
+              <div className="bg-surface border border-surface-border rounded-lg p-6 sm:p-8 shadow-sm">
+                <div className="mb-6">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="w-2 h-2 rounded-full bg-accent" />
+                    <span className="text-[11px] font-mono uppercase tracking-widest text-text-muted">
+                      Direct Message
+                    </span>
+                  </div>
+                  <h3 className="text-lg sm:text-xl font-bold text-text-primary tracking-tight">
+                    Send me an email
+                  </h3>
+                  <p className="text-xs sm:text-sm text-text-secondary leading-relaxed mt-1">
+                    Have an internship opportunity, project inquiry, or just want to connect? Fill out the fields below and it will compose your email directly.
+                  </p>
+                </div>
+
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Name Input */}
+                    <div>
+                      <label
+                        htmlFor="sender-name"
+                        className="block text-xs font-mono uppercase tracking-wider text-text-secondary font-medium mb-1.5"
+                      >
+                        Your Name
+                      </label>
+                      <input
+                        id="sender-name"
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        placeholder="John Doe"
+                        className="w-full bg-background border border-surface-border rounded-md px-3.5 py-2 text-xs sm:text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors font-sans"
+                      />
+                    </div>
+
+                    {/* Email Input */}
+                    <div>
+                      <label
+                        htmlFor="sender-email"
+                        className="block text-xs font-mono uppercase tracking-wider text-text-secondary font-medium mb-1.5"
+                      >
+                        Your Email <span className="text-accent">*</span>
+                      </label>
+                      <input
+                        id="sender-email"
+                        type="email"
+                        name="email"
+                        required
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        placeholder="john@example.com"
+                        className="w-full bg-background border border-surface-border rounded-md px-3.5 py-2 text-xs sm:text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors font-sans"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Subject Input */}
+                  <div>
+                    <label
+                      htmlFor="email-subject"
+                      className="block text-xs font-mono uppercase tracking-wider text-text-secondary font-medium mb-1.5"
+                    >
+                      Subject
+                    </label>
+                    <input
+                      id="email-subject"
+                      type="text"
+                      name="subject"
+                      value={formData.subject}
+                      onChange={handleInputChange}
+                      placeholder="Opportunity / Collaboration Inquiry"
+                      className="w-full bg-background border border-surface-border rounded-md px-3.5 py-2 text-xs sm:text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors font-sans"
+                    />
+                  </div>
+
+                  {/* Message Input */}
+                  <div>
+                    <label
+                      htmlFor="email-message"
+                      className="block text-xs font-mono uppercase tracking-wider text-text-secondary font-medium mb-1.5"
+                    >
+                      Message <span className="text-accent">*</span>
+                    </label>
+                    <textarea
+                      id="email-message"
+                      name="message"
+                      required
+                      rows={4}
+                      value={formData.message}
+                      onChange={handleInputChange}
+                      placeholder="Write your message here..."
+                      className="w-full bg-background border border-surface-border rounded-md px-3.5 py-2.5 text-xs sm:text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors font-sans resize-none"
+                    />
+                  </div>
+
+                  {/* Submit Button & Status */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
+                    <button
+                      type="submit"
+                      className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-md bg-accent text-white text-xs font-mono uppercase tracking-wider font-semibold hover:bg-accent-hover transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-accent/40 cursor-pointer"
+                    >
+                      <span>Send Email</span>
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                      </svg>
+                    </button>
+
+                    {status === "sent" && (
+                      <span className="text-xs font-mono text-emerald-500 flex items-center gap-1.5">
+                        <span className="font-bold">✓</span> Opening email client...
+                      </span>
+                    )}
+                  </div>
+                </form>
+              </div>
+            </ScrollReveal>
+          </div>
+
+          {/* Right Column: Direct Contacts & Verified Profiles (5 cols) */}
+          <div className="lg:col-span-5 flex flex-col gap-6">
+            <ScrollReveal direction="up" duration={500} delay={150}>
+              <div className="bg-surface border border-surface-border rounded-lg p-6 sm:p-7 shadow-sm space-y-6">
+                <div>
+                  <h3 className="text-base font-bold text-text-primary tracking-tight mb-1">
+                    Quick Contacts
+                  </h3>
+                  <p className="text-xs text-text-muted font-mono">
+                    Direct access via email or instant messaging
+                  </p>
+                </div>
 
                 {/* Email Callout Box */}
-                <div className="p-4 rounded-md bg-background border border-surface-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
-                  <div>
+                <div className="p-4 rounded-md bg-background border border-surface-border flex items-center justify-between gap-3">
+                  <div className="min-w-0">
                     <span className="text-[10px] font-mono uppercase text-text-muted tracking-wider block">
                       Direct Email
                     </span>
                     <a
                       href={`mailto:${profile.email}`}
-                      className="text-sm sm:text-base font-mono font-medium text-accent hover:underline"
+                      className="text-xs sm:text-sm font-mono font-medium text-accent hover:underline truncate block"
                     >
                       {profile.email}
                     </a>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={copyEmail}
-                      className="px-3 py-1.5 rounded border border-surface-border text-xs font-mono uppercase tracking-wider text-text-secondary hover:text-text-primary hover:border-accent transition-colors shrink-0"
-                    >
-                      {copied ? "Copied ✓" : "Copy"}
-                    </button>
-                    <a
-                      href={`mailto:${profile.email}`}
-                      className="px-3 py-1.5 rounded bg-accent text-white text-xs font-mono uppercase tracking-wider hover:bg-accent-hover transition-colors shrink-0 font-medium"
-                    >
-                      Send ↗
-                    </a>
-                  </div>
+                  <button
+                    type="button"
+                    onClick={copyEmail}
+                    className="px-3 py-1.5 rounded border border-surface-border text-xs font-mono uppercase tracking-wider text-text-secondary hover:text-text-primary hover:border-accent transition-colors shrink-0 cursor-pointer"
+                  >
+                    {copied ? "Copied ✓" : "Copy"}
+                  </button>
                 </div>
 
-                {/* Additional Contact Methods */}
-                <div className="flex flex-col gap-3">
+                {/* Messenger / Phone Contacts */}
+                <div className="flex flex-col gap-2.5">
                   {contactMethods.map((method, idx) => (
                     <a
                       key={idx}
                       href={method.url || "#"}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-between p-3 rounded-md border border-surface-border hover:border-accent/50 hover:bg-background transition-colors group"
+                      className="flex items-center justify-between p-2.5 rounded-md border border-surface-border hover:border-accent/50 hover:bg-background transition-colors group"
                     >
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2.5 min-w-0">
                         {method.imageIcon && (
-                          <div className="relative w-5 h-5 shrink-0">
+                          <div className="relative w-4 h-4 shrink-0">
                             <Image
                               src={method.imageIcon}
                               alt={method.label}
                               fill
                               className="object-contain"
-                              sizes="20px"
+                              sizes="16px"
                             />
                           </div>
                         )}
-                        <div>
-                          <span className="text-xs font-mono text-text-muted block">
-                            {method.label}
-                          </span>
-                          <span className="text-sm font-medium text-text-primary group-hover:text-accent transition-colors">
-                            {method.value}
-                          </span>
-                        </div>
+                        <span className="text-xs font-mono text-text-muted">
+                          {method.label}:
+                        </span>
+                        <span className="text-xs font-medium text-text-primary group-hover:text-accent transition-colors truncate">
+                          {method.value}
+                        </span>
                       </div>
                       <span className="text-xs font-mono text-text-muted group-hover:text-accent transition-colors">
                         ↗
@@ -111,67 +260,50 @@ export default function ContactSection() {
                     </a>
                   ))}
                 </div>
-              </div>
-            </ScrollReveal>
-          </div>
 
-          {/* Social Profiles & Developer Links (6 cols) */}
-          <div className="lg:col-span-6 flex flex-col gap-6">
-            <ScrollReveal direction="up" duration={500} delay={150}>
-              <div className="bg-surface border border-surface-border rounded-lg p-6 sm:p-8">
-                <h3 className="text-lg font-bold text-text-primary tracking-tight mb-2">
-                  Profiles & Activity
-                </h3>
-                <p className="text-sm text-text-secondary leading-relaxed mb-6">
-                  Explore verified code repositories, professional profile, and social channels.
-                </p>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {socialLinks.map((link) => (
-                    <a
-                      key={link.platform}
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-between p-3.5 rounded-md border border-surface-border hover:border-accent hover:bg-background transition-all group"
-                      title={`${link.platform}: ${link.handle}`}
-                    >
-                      <div className="flex items-center gap-3 min-w-0">
-                        {link.imageIcon ? (
-                          <div className="relative w-6 h-6 shrink-0">
-                            <Image
-                              src={link.imageIcon}
-                              alt={link.platform}
-                              fill
-                              className="object-contain"
-                              sizes="24px"
-                            />
-                          </div>
-                        ) : (
-                          <span className="w-6 h-6 rounded bg-surface-border flex items-center justify-center font-mono text-xs font-bold text-text-primary">
-                            {link.platform[0]}
-                          </span>
-                        )}
-                        <div className="min-w-0">
-                          <span className="text-sm font-semibold text-text-primary group-hover:text-accent transition-colors block truncate">
+                {/* Social Profiles Grid */}
+                <div>
+                  <span className="text-[10px] font-mono uppercase text-text-muted tracking-wider block mb-2.5">
+                    Verified Profiles
+                  </span>
+                  <div className="grid grid-cols-2 gap-2">
+                    {socialLinks.map((link) => (
+                      <a
+                        key={link.platform}
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-between p-2.5 rounded-md border border-surface-border hover:border-accent hover:bg-background transition-all group"
+                        title={`${link.platform}: ${link.handle}`}
+                      >
+                        <div className="flex items-center gap-2 min-w-0">
+                          {link.imageIcon && (
+                            <div className="relative w-4 h-4 shrink-0">
+                              <Image
+                                src={link.imageIcon}
+                                alt={link.platform}
+                                fill
+                                className="object-contain"
+                                sizes="16px"
+                              />
+                            </div>
+                          )}
+                          <span className="text-xs font-medium text-text-primary group-hover:text-accent transition-colors truncate">
                             {link.platform}
                           </span>
-                          <span className="text-xs font-mono text-text-muted block truncate">
-                            {link.handle}
-                          </span>
                         </div>
-                      </div>
-                      <span className="text-xs font-mono text-text-muted group-hover:text-accent transition-colors pl-2">
-                        ↗
-                      </span>
-                    </a>
-                  ))}
+                        <span className="text-[11px] font-mono text-text-muted group-hover:text-accent transition-colors">
+                          ↗
+                        </span>
+                      </a>
+                    ))}
+                  </div>
                 </div>
 
                 {/* Location indicator */}
-                <div className="mt-6 pt-4 border-t border-surface-border flex items-center justify-between text-xs font-mono text-text-muted">
-                  <span>Timezone: GMT+8 (PHT)</span>
-                  <span>Based in Bukidnon, PH</span>
+                <div className="pt-3 border-t border-surface-border flex items-center justify-between text-[11px] font-mono text-text-muted">
+                  <span>GMT+8 (PHT)</span>
+                  <span>Malaybalay City, PH</span>
                 </div>
               </div>
             </ScrollReveal>
