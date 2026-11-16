@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { siteMeta } from "@/data/site";
 import "./globals.css";
@@ -27,7 +28,9 @@ export default function RootLayout({
     >
       <head>
         {/* Prevent flash of wrong theme */}
-        <script
+        <Script
+          id="theme-initializer"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               (function() {

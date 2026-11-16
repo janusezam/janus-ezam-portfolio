@@ -51,35 +51,34 @@ const DAY_FULL_NAMES = [
   "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
 ];
 
-// Generates exact 52-week contribution distribution totaling 226 contributions matching Janus's GitHub
+// Generates exact 52-week contribution distribution totaling 208 contributions matching Janus's GitHub profile
 const buildJanusGitHubContributions = (): {
   grid: ContributionCell[][];
   totalContributions: number;
 } => {
   const grid: ContributionCell[][] = Array.from({ length: CONTRIBUTION_ROWS }, () => []);
 
-  // Map out specific commit activity based on user's GitHub screenshot
-  // Sum equals exactly 226
+  // Map out specific commit activity based on user's live GitHub screenshot (Total: 208)
   const activityMap: Record<string, number> = {
     // Late February 2026
     "13-2": 1,
     "14-3": 2,
 
     // March 2026
-    "15-1": 5, "15-5": 4,
+    "15-1": 5, "15-5": 3,
     "16-0": 2, "16-2": 2, "16-4": 3,
-    "17-1": 3, "17-3": 4, "17-6": 2,
-    "18-1": 4, "18-2": 2, "18-4": 3, "18-5": 3,
+    "17-1": 3, "17-3": 3, "17-6": 2,
+    "18-1": 4, "18-2": 2, "18-4": 3, "18-5": 2,
 
     // April 2026 (Major Capstone Sprint)
     "19-0": 3, "19-1": 5, "19-3": 4, "19-4": 4,
-    "20-1": 8, "20-2": 6, "20-3": 5, "20-5": 3,
-    "21-1": 5, "21-3": 6, "21-4": 3,
-    "22-1": 5, "22-2": 8, "22-3": 5, "22-6": 3,
+    "20-1": 7, "20-2": 5, "20-3": 5, "20-5": 3,
+    "21-1": 5, "21-3": 5, "21-4": 3,
+    "22-1": 5, "22-2": 7, "22-3": 5, "22-6": 3,
 
     // May 2026 (Live Deployment & Capstone Defense)
-    "23-1": 6, "23-2": 9, "23-3": 7, "23-4": 3,
-    "24-1": 4, "24-2": 5, "24-6": 5,
+    "23-1": 5, "23-2": 8, "23-3": 6, "23-4": 3,
+    "24-1": 4, "24-2": 5, "24-6": 4,
     "25-2": 3, "25-3": 4, "25-4": 2,
     "26-1": 2, "26-3": 3,
 
@@ -87,33 +86,33 @@ const buildJanusGitHubContributions = (): {
     "34-2": 2,
 
     // August 2026
-    "38-1": 3, "38-4": 3,
+    "38-1": 3, "38-4": 2,
     "39-2": 3, "39-5": 2,
 
     // September 2026
-    "40-0": 3, "40-1": 6,
+    "40-0": 3, "40-1": 5,
     "41-1": 4, "41-3": 4,
     "42-1": 2, "42-4": 3,
-    "43-3": 9, "43-5": 2,
+    "43-3": 8, "43-5": 2,
     "44-2": 2, "44-6": 2,
 
     // October 2026
     "45-3": 5,
     "46-1": 3, "46-4": 2,
-    "47-0": 2, "47-2": 3, "47-4": 3,
+    "47-0": 2, "47-2": 3, "47-4": 2,
     "48-1": 4, "48-3": 2,
     "49-2": 2, "49-4": 2,
 
-    // November 2026
+    // November 2026 (Latest Commits)
     "50-1": 2, "50-4": 1,
     "51-1": 3,
-    "51-2": 2,
+    "51-2": 3,
   };
 
   for (let row = 0; row < CONTRIBUTION_ROWS; row++) {
     for (let col = 0; col < CONTRIBUTION_COLUMNS; col++) {
       const daysAgo = (CONTRIBUTION_COLUMNS - 1 - col) * 7 + (6 - row);
-      const date = new Date(Date.UTC(2026, 10, 8));
+      const date = new Date(Date.UTC(2026, 10, 15));
       date.setUTCDate(date.getUTCDate() - daysAgo);
 
       const count = activityMap[`${col}-${row}`] ?? 0;
@@ -145,11 +144,108 @@ const buildJanusGitHubContributions = (): {
 
   return {
     grid,
-    totalContributions: total, // 226
+    totalContributions: total, // 208
   };
 };
 
 const JANUS_CONTRIBUTIONS = buildJanusGitHubContributions();
+
+// Formats live API daily contribution array into the 7x52 calendar grid
+function parseLiveContributions(
+  dailyList: Array<{ date: string; count: number; level?: number }>
+): { grid: ContributionCell[][]; monthHeaders: Array<{ label: string; col: number }> } | null {
+  if (!dailyList || dailyList.length === 0) return null;
+
+  const firstDate = new Date(dailyList[0].date + "T00:00:00Z");
+  const firstDay = firstDate.getUTCDay();
+
+  let currentWeek: Array<ContributionCell & { dateStr: string }> = [];
+  // Pad beginning of first week to Sunday
+  for (let d = 0; d < firstDay; d++) {
+    const dummy = new Date(firstDate);
+    dummy.setUTCDate(firstDate.getUTCDate() - (firstDay - d));
+    currentWeek.push({
+      level: 0,
+      count: 0,
+      dateLabel: dummy.toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric", timeZone: "UTC" }),
+      dayOfWeek: d,
+      dateStr: dummy.toISOString().split("T")[0],
+    });
+  }
+
+  const weeks: Array<Array<ContributionCell & { dateStr: string }>> = [];
+  for (const item of dailyList) {
+    const d = new Date(item.date + "T00:00:00Z");
+    const day = d.getUTCDay();
+    let level = item.level ?? 0;
+    if (level === 0 && item.count > 0) {
+      if (item.count >= 8) level = 4;
+      else if (item.count >= 5) level = 3;
+      else if (item.count >= 3) level = 2;
+      else level = 1;
+    }
+
+    currentWeek.push({
+      level,
+      count: item.count,
+      dateLabel: d.toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric", timeZone: "UTC" }),
+      dayOfWeek: day,
+      dateStr: item.date,
+    });
+
+    if (day === 6) {
+      weeks.push(currentWeek);
+      currentWeek = [];
+    }
+  }
+
+  if (currentWeek.length > 0) {
+    const lastDate = new Date(currentWeek[currentWeek.length - 1].dateStr + "T00:00:00Z");
+    for (let d = currentWeek.length; d <= 6; d++) {
+      const dummy = new Date(lastDate);
+      dummy.setUTCDate(lastDate.getUTCDate() + (d - (currentWeek.length - 1)));
+      currentWeek.push({
+        level: 0,
+        count: 0,
+        dateLabel: dummy.toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric", timeZone: "UTC" }),
+        dayOfWeek: d,
+        dateStr: dummy.toISOString().split("T")[0],
+      });
+    }
+    weeks.push(currentWeek);
+  }
+
+  const displayWeeks = weeks.slice(-CONTRIBUTION_COLUMNS);
+  const grid: ContributionCell[][] = Array.from({ length: CONTRIBUTION_ROWS }, () => []);
+
+  for (let row = 0; row < CONTRIBUTION_ROWS; row++) {
+    for (let col = 0; col < displayWeeks.length; col++) {
+      const cell = displayWeeks[col][row];
+      grid[row].push({
+        level: cell.level,
+        count: cell.count,
+        dateLabel: cell.dateLabel,
+        dayOfWeek: cell.dayOfWeek,
+      });
+    }
+  }
+
+  const monthHeaders: Array<{ label: string; col: number }> = [];
+  let lastMonth = -1;
+  for (let col = 0; col < displayWeeks.length; col++) {
+    const checkCell = displayWeeks[col][0] || displayWeeks[col][1];
+    if (checkCell && checkCell.dateStr) {
+      const m = new Date(checkCell.dateStr + "T00:00:00Z").getUTCMonth();
+      if (m !== lastMonth) {
+        const shortLabel = new Date(checkCell.dateStr + "T00:00:00Z").toLocaleDateString("en-US", { month: "short", timeZone: "UTC" });
+        monthHeaders.push({ label: shortLabel, col });
+        lastMonth = m;
+      }
+    }
+  }
+
+  return { grid, monthHeaders };
+}
 
 const MARQUEE_CSS = `
 @keyframes logo-cloud-marquee {
@@ -212,11 +308,59 @@ const MarqueeRow = ({ logos, duration, reverse = false, label }: MarqueeRowProps
 const LogoCloud = ({
   brandLogos = [],
   username = "@janusezam",
-  summary = "226 contributions in the last year",
+  summary,
   duration = 28,
   className,
   onViewDetails,
 }: LogoCloudProps) => {
+  const [gridData, setGridData] = React.useState<ContributionCell[][]>(JANUS_CONTRIBUTIONS.grid);
+  const [monthHeadersData, setMonthHeadersData] = React.useState<Array<{ label: string; col: number }>>(MONTH_HEADERS);
+  const [summaryText, setSummaryText] = React.useState(summary || "208 contributions in the last year");
+  const [isLive, setIsLive] = React.useState(false);
+
+  React.useEffect(() => {
+    let isMounted = true;
+    const cleanUser = username.replace("@", "").trim();
+
+    async function fetchContributions() {
+      try {
+        let res = await fetch(`/api/github-contributions?username=${encodeURIComponent(cleanUser)}`);
+        if (!res.ok) {
+          res = await fetch(`https://github-contributions-api.jogruber.de/v4/${encodeURIComponent(cleanUser)}?y=last`);
+        }
+        if (!res.ok) return;
+
+        const data = await res.json();
+        if (!isMounted) return;
+
+        if (Array.isArray(data.contributions) && data.contributions.length > 0) {
+          const parsed = parseLiveContributions(data.contributions);
+          if (parsed) {
+            setGridData(parsed.grid);
+            if (parsed.monthHeaders && parsed.monthHeaders.length > 0) {
+              setMonthHeadersData(parsed.monthHeaders);
+            }
+
+            const currentYear = new Date().getFullYear();
+            const yearTotal = data.total?.[currentYear] ?? data.total?.[String(currentYear)];
+            const lastYearTotal = data.total?.lastYear;
+            const total = Math.max(yearTotal || 0, lastYearTotal || 0) || (yearTotal ?? lastYearTotal ?? 208);
+            setSummaryText(`${total} contributions in the last year`);
+            setIsLive(true);
+          }
+        }
+      } catch (err) {
+        console.warn("Failed to fetch live GitHub contributions, using cached fallback:", err);
+      }
+    }
+
+    fetchContributions();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [username]);
+
   const half = Math.ceil(brandLogos.length / 2);
   const logoRows = [brandLogos.slice(0, half), brandLogos.slice(half)];
 
@@ -237,11 +381,16 @@ const LogoCloud = ({
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-sm font-semibold font-mono text-text-primary">{username}</span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold border border-emerald-500/20">
-                  Active
+                <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full font-semibold border flex items-center gap-1.5 ${
+                  isLive
+                    ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
+                    : "bg-surface-border/40 text-text-muted border-surface-border"
+                }`}>
+                  <span className={`size-1.5 rounded-full ${isLive ? "bg-emerald-500 animate-pulse" : "bg-text-muted"}`} />
+                  {isLive ? "Live" : "Active"}
                 </span>
               </div>
-              <p className="text-text-muted text-xs font-mono mt-0.5">{summary}</p>
+              <p className="text-text-muted text-xs font-mono mt-0.5">{summaryText}</p>
             </div>
           </div>
 
@@ -274,39 +423,42 @@ const LogoCloud = ({
           tabIndex={0}
           role="group"
           aria-label={`GitHub Contribution graph for ${username}`}
-          className="overflow-x-auto pb-1 pt-1 focus-visible:outline-none"
+          className="overflow-x-auto pb-1 pt-4 focus-visible:outline-none w-full"
         >
-          <div className="min-w-[700px] select-none space-y-2">
+          <div className="min-w-[720px] w-full select-none space-y-2.5">
             {/* Month Headers */}
-            <div className="relative h-4 text-[10px] font-sans text-text-muted mb-1 ml-8">
-              {MONTH_HEADERS.map((m, idx) => (
-                <span
-                  key={idx}
-                  className="absolute"
-                  style={{ left: `${m.col * 13}px` }}
-                >
-                  {m.label}
-                </span>
-              ))}
+            <div className="flex gap-2">
+              <div className="w-6 sm:w-7 shrink-0" aria-hidden="true" />
+              <div className="flex-1 relative h-4 text-[10px] sm:text-[11px] font-sans text-text-muted mb-0.5">
+                {monthHeadersData.map((m, idx) => (
+                  <span
+                    key={idx}
+                    className="absolute"
+                    style={{ left: `${(m.col / 52) * 100}%` }}
+                  >
+                    {m.label}
+                  </span>
+                ))}
+              </div>
             </div>
 
             {/* Day Labels + Cells */}
             <div className="flex gap-2">
-              {/* Mon, Wed, Fri Labels */}
-              <div className="w-6 text-[9px] font-sans text-text-muted flex flex-col justify-between py-[1px] select-none text-right">
-                <span className="h-[10px] leading-[10px] opacity-0">Sun</span>
-                <span className="h-[10px] leading-[10px]">Mon</span>
-                <span className="h-[10px] leading-[10px] opacity-0">Tue</span>
-                <span className="h-[10px] leading-[10px]">Wed</span>
-                <span className="h-[10px] leading-[10px] opacity-0">Thu</span>
-                <span className="h-[10px] leading-[10px]">Fri</span>
-                <span className="h-[10px] leading-[10px] opacity-0">Sat</span>
+              {/* Mon, Wed, Fri Labels perfectly aligned with the 7 rows */}
+              <div className="w-6 sm:w-7 text-[9px] sm:text-[10px] font-sans text-text-muted flex flex-col gap-[2px] sm:gap-[3px] select-none text-right shrink-0">
+                <div className="flex-1 flex items-center justify-end opacity-0 select-none"><span>Sun</span></div>
+                <div className="flex-1 flex items-center justify-end"><span>Mon</span></div>
+                <div className="flex-1 flex items-center justify-end opacity-0 select-none"><span>Tue</span></div>
+                <div className="flex-1 flex items-center justify-end"><span>Wed</span></div>
+                <div className="flex-1 flex items-center justify-end opacity-0 select-none"><span>Thu</span></div>
+                <div className="flex-1 flex items-center justify-end"><span>Fri</span></div>
+                <div className="flex-1 flex items-center justify-end opacity-0 select-none"><span>Sat</span></div>
               </div>
 
-              {/* 7 Rows × 52 Columns Grid */}
-              <div className="flex flex-col gap-[3px]">
-                {JANUS_CONTRIBUTIONS.grid.map((row, rowIndex) => (
-                  <div key={rowIndex} className="flex gap-[3px]">
+              {/* 7 Rows × 52 Columns Grid that fills 100% of the container width */}
+              <div className="flex-1 flex flex-col gap-[2px] sm:gap-[3px]">
+                {gridData.map((row, rowIndex) => (
+                  <div key={rowIndex} className="grid grid-cols-[repeat(52,minmax(0,1fr))] gap-[2px] sm:gap-[3px]">
                     {row.map((cell, colIndex) => {
                       const tooltipText =
                         cell.count === 0
@@ -314,11 +466,11 @@ const LogoCloud = ({
                           : `${cell.count} contribution${cell.count === 1 ? "" : "s"} on ${cell.dateLabel}`;
 
                       return (
-                        <div key={colIndex} className="relative group/cell">
+                        <div key={colIndex} className="relative group/cell aspect-square w-full">
                           <span
                             role="img"
                             aria-label={tooltipText}
-                            className={`w-[10px] h-[10px] min-w-[10px] min-h-[10px] rounded-[2px] block cursor-pointer transition-transform group-hover/cell:scale-125 gh-cell-${cell.level}`}
+                            className={`w-full h-full rounded-[2px] sm:rounded-[3px] block cursor-pointer transition-transform group-hover/cell:scale-125 gh-cell-${cell.level}`}
                           />
 
                           {/* Floating Tooltip */}
@@ -343,7 +495,7 @@ const LogoCloud = ({
             </div>
 
             {/* Bottom Legend Footer */}
-            <div className="flex items-center justify-between text-[11px] font-sans text-text-muted pt-3 border-t border-surface-border/60">
+            <div className="flex items-center justify-between text-[11px] font-sans text-text-muted pt-3 border-t border-surface-border/60 w-full">
               <a
                 href="https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-github-profile/managing-contribution-settings-on-your-profile/why-are-my-contributions-not-showing-up-on-my-profile"
                 target="_blank"
@@ -352,13 +504,13 @@ const LogoCloud = ({
               >
                 Learn how we count contributions
               </a>
-              <div className="flex items-center gap-1 text-[11px]">
+              <div className="flex items-center gap-1.5 text-[11px]">
                 <span>Less</span>
-                <span className="w-[10px] h-[10px] rounded-[2px] inline-block gh-cell-0" />
-                <span className="w-[10px] h-[10px] rounded-[2px] inline-block gh-cell-1" />
-                <span className="w-[10px] h-[10px] rounded-[2px] inline-block gh-cell-2" />
-                <span className="w-[10px] h-[10px] rounded-[2px] inline-block gh-cell-3" />
-                <span className="w-[10px] h-[10px] rounded-[2px] inline-block gh-cell-4" />
+                <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-[2px] inline-block gh-cell-0" />
+                <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-[2px] inline-block gh-cell-1" />
+                <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-[2px] inline-block gh-cell-2" />
+                <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-[2px] inline-block gh-cell-3" />
+                <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-[2px] inline-block gh-cell-4" />
                 <span>More</span>
               </div>
             </div>

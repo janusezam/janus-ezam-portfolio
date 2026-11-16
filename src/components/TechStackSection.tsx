@@ -77,7 +77,6 @@ export default function TechStackSection() {
             <LogoCloud
               brandLogos={brandLogos}
               username="@janusezam"
-              summary="226 contributions in the last year"
               duration={28}
               onViewDetails={() => setIsModalOpen(true)}
             />

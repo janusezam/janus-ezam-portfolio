@@ -94,7 +94,7 @@ export default function ProjectsSection() {
                 <article className="bg-surface border border-surface-border rounded-lg overflow-hidden hover:border-accent/40 transition-colors">
                   <div className="grid grid-cols-1 lg:grid-cols-12 items-stretch">
                     {/* Media / Showcase (7 cols) — Prominent Image Highlight */}
-                    <div className="lg:col-span-7 bg-background/50 p-4 sm:p-5 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-surface-border relative">
+                    <div className="lg:col-span-7 bg-surface p-4 sm:p-5 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-surface-border relative">
                       {/* View Mode Toggle Header */}
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-[10px] font-mono uppercase tracking-wider text-text-muted">

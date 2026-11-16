@@ -6,9 +6,13 @@ import ThemeToggle from "@/components/ThemeToggle";
 import Footer from "@/components/Footer";
 import Image from "next/image";
 
+// Render dynamic on demand to prevent OneDrive static segment locking
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
-  const project = projects.find((p) => p.id === resolvedParams.id);
+  const id = resolvedParams?.id ? decodeURIComponent(resolvedParams.id) : "";
+  const project = projects.find((p) => p.id === id || p.id.toLowerCase() === id.toLowerCase());
   if (!project) return { title: "Project Not Found" };
   return {
     title: `${project.title} | Janus Ezam Tagud`,
@@ -16,12 +20,10 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   };
 }
 
-// Generate pages on demand
-export const dynamic = "force-dynamic";
-
 export default async function ProjectDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
-  const project = projects.find((p) => p.id === resolvedParams.id);
+  const id = resolvedParams?.id ? decodeURIComponent(resolvedParams.id) : "";
+  const project = projects.find((p) => p.id === id || p.id.toLowerCase() === id.toLowerCase());
 
   if (!project) {
     notFound();

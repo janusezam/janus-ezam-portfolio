@@ -34,8 +34,8 @@ Built with **Next.js 16**, **React 19**, **Tailwind CSS v4**, and **TypeScript**
 6. **04 / Featured Projects**
    - Deep-dive case studies including:
      - **SALBA (CDRRMO Web/Mobile Flood & Hazard Early Warning System)**
-     - **Library Management System (Laravel & MySQL)**
-     - **SaaS Multi-tenant ISMS (Intramural Sports Management)**
+     - **Multi-Tenant B2B SaaS — Intramural Sports Management System (ISMS)**
+     - **Water Delivery Management System (POS & Real-Time GPS Tracking)**
    - Interactive modal lightbox for viewing system mockups and full screenshots with keyboard navigation (Esc, Arrow keys).
 
 7. **05 / Certifications**
